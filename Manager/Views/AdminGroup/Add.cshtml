@@ -1,0 +1,203 @@
+﻿@using Manager.Common;
+@model Manager.Models.Manage.MenuListModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="/js/manage/group/group.js?ver=@Func.GetNow()"></script>
+<form name="form" method="post" action="/manage/group/add" onsubmit="return checkField()">
+    @Html.AntiForgeryToken()
+    <div class="tb_layout_1">
+        <table>
+            <colgroup>
+                <col style="width: 150px;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td class="title"><span class="required">그룹명</span></td>
+                    <td><input type="text" name="groupname" id="GroupName" maxlength="20" value="" class="input_text" style="width: 30%;" /></td>
+                </tr>
+                <tr>
+                    <td class="title"><span class="required">그룹설명</span></td>
+                    <td><input type="text" name="groupdesc" id="GroupDesc" maxlength="60" value="" class="input_text" style="width: 70%;" /></td>
+                </tr>
+                <tr>
+                    <td class="title"><span class="required">그룹권한</span></td>
+                    <td>
+                        <table class="tb_data_1 embed">
+                            <colgroup>
+                                <col style="width: 40px;">
+                                <col style="width: 40px;">
+                                <col style="width: auto;">
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>쓰기</th>
+                                    <th>읽기</th>
+                                    <th>메뉴</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var depth1 in Model.Depth1List)
+                                {
+                                    <tr style="background:#EFEFF7;">
+                                        <td><input type="checkbox" name="main_write" data-code="@depth1.menucode" id="main_write_@depth1.menucode" value="@depth1.menucode" /></td>
+                                        <td><input type="checkbox" name="main_read" data-code="@depth1.menucode" id="main_read_@depth1.menucode" value="@depth1.menucode" /></td>
+                                        <td class="al pl10">@depth1.menuname</td>
+                                    </tr>
+                                    foreach (var depth2 in Model.Depth2List)
+                                    {
+                                        if (depth1.menucode.Equals(depth2.menupcode))
+                                        {
+                                            <tr>
+                                                <td><input type="checkbox" name="sub_write" data-parent-code="@depth1.menucode" value="@depth2.menucode" /></td>
+                                                <td><input type="checkbox" name="sub_read" data-parent-code="@depth1.menucode" value="@depth2.menucode" /></td>
+                                                <td class="al pl10">@depth2.menuname</td>
+                                            </tr>
+
+                                        }
+                                    }
+                                }
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="posR mt20">
+        <div class="btnRight2">
+            @if (ViewBag.Permission.isWrite)
+            {
+                <button class="btn-c"><span>입력</span></button>
+            }
+            <a href="/manage/group/list" class="btn-d"><span>목록</span></a>
+        </div>
+    </div>
+
+</form>
+
+<script type="text/javascript">
+    $(function () {
+        /* 대분류 쓰기 체크박스 클릭 */
+        $("input:checkbox[name='main_write']").click(function () {
+            var code = $(this).val();
+            var chk = $(this).is(":checked");
+            var idx = $("input:checkbox[name='main_write']").index(this);
+
+            if (chk) {
+                $("input:checkbox[name='main_read']").eq(idx).attr("checked", true);
+            }
+
+            $("input:checkbox[name='sub_write']").each(function (num) {
+                if (code == $(this).attr("data-parent-code")) {
+                    if (chk) {
+                        $(this).attr("checked", true);
+                        $("input:checkbox[name='sub_read']").eq(num).attr("checked", true);
+                    }
+                    else {
+                        $(this).attr("checked", false);
+                    }
+                }
+            });
+        });
+
+        /* 대분류 읽기 체크박스 클릭 */
+        $("input:checkbox[name='main_read']").click(function () {
+            var code = $(this).val();
+            var chk = $(this).is(":checked");
+            var idx = $("input:checkbox[name='main_read']").index(this);
+
+            if (!chk) {
+                $("input:checkbox[name='main_write']").eq(idx).attr("checked", false);
+            }
+
+            $("input:checkbox[name='sub_read']").each(function (num) {
+                if (code == $(this).attr("data-parent-code")) {
+                    if (chk) {
+                        $(this).attr("checked", true);
+                    }
+                    else {
+                        $(this).attr("checked", false);
+                        $("input:checkbox[name='sub_write']").eq(num).attr("checked", false);
+                    }
+                }
+            });
+        });
+
+        /* 소분류 쓰기 체크박스 클릭 */
+        $("input:checkbox[name='sub_write']").click(function () {
+            var parent_code = $(this).attr("data-parent-code");
+            var chk = $(this).is(":checked");
+            var idx = $("input:checkbox[name='sub_write']").index(this);
+            var other_chk = false;
+
+            if (chk) {
+                $("input:checkbox[name='sub_read']").eq(idx).attr("checked", true);
+            }
+            else {
+                $("input:checkbox[name='sub_write']").each(function (num) {
+                    if (parent_code == $(this).attr("data-parent-code")) {
+                        if (idx != num) {
+                            if ($(this).is(":checked")) {
+                                other_chk = true;
+                            }
+                        }
+                    }
+                });
+            }
+
+            $("input:checkbox[name='main_write']").each(function (num) {
+                if (parent_code == $(this).attr("data-code")) {
+                    if (chk) {
+                        $(this).attr("checked", true);
+                        $("input:checkbox[name='main_read']").eq(num).attr("checked", true);
+                    }
+                    else {
+                        if (!other_chk) {
+                            $(this).attr("checked", false);
+                        }
+                    }
+                }
+            });
+        });
+
+        /* 소분류 읽기 체크박스 클릭 */
+        $("input:checkbox[name='sub_read']").click(function () {
+            var parent_code = $(this).attr("data-parent-code");
+            var chk = $(this).is(":checked");
+            var idx = $("input:checkbox[name='sub_read']").index(this);
+            var other_chk = false;
+
+            if (!chk) {
+                $("input:checkbox[name='sub_write']").eq(idx).attr("checked", false);
+
+                $("input:checkbox[name='sub_read']").each(function (num) {
+                    if (parent_code == $(this).attr("data-parent-code")) {
+                        if (idx != num) {
+                            if ($(this).is(":checked")) {
+                                other_chk = true;
+                            }
+                        }
+                    }
+                });
+            }
+
+            $("input:checkbox[name='main_read']").each(function (num) {
+                if (parent_code == $(this).attr("data-code")) {
+                    if (chk) {
+                        $(this).attr("checked", true);
+                    }
+                    else {
+                        if (!other_chk) {
+                            $(this).attr("checked", false);
+                            $("input:checkbox[name='main_write']").eq(num).attr("checked", false);
+                        }
+                    }
+                }
+            });
+        });
+    });
+</script>
+</div>

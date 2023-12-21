@@ -1,0 +1,61 @@
+﻿@using Manager.Common;
+@model Manager.Models.Manage.AdminGroupListModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    int loop = 0;
+}
+<script type="text/javascript" src="/js/manage/group/group.js?ver=@Func.GetNow()"></script>
+<div class="tb_data_1">
+
+    @if (ViewBag.Permission.isWrite)
+    {
+        <div class="btnRight3">
+            <a href="/manage/group/add" class="btn-c"><span>그룹입력</span></a>
+        </div>
+    }
+
+    <table>
+        <colgroup>
+            <col style="width: 10%;" />
+            <col style="width: 20%;" />
+            <col style="width: auto;" />
+            <col style="width: 10%;" />
+            <col style="width: 10%;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th>번호</th>
+                <th>그룹명</th>
+                <th>그룹설명</th>
+                <th>관리자수</th>
+                <th>현황</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AdminGroupList)
+            {
+                loop += 1;
+                <tr>
+                    <td>@loop</td>
+                    <td>
+                        @if (ViewBag.Permission.isWrite)
+                        {
+                            <a style="color:#0000ff" href="/manage/group/modify/@item.groupcode">@item.groupname</a>
+                        }
+                        else
+                        {
+                            @item.groupname
+                        }
+
+                    </td>
+                    <td class="al pl10">@item.groupdesc</td>
+                    <td>@item.admincnt</td>
+                    <td>
+                        <a onclick="list_Admin(@item.groupcode)" class="btn-c" style="cursor: pointer;"><span>현황</span></a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+</div>
