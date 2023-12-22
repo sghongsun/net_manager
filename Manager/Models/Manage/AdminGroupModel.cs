@@ -20,4 +20,18 @@ namespace Manager.Models.Manage
     {
         public List<AdminGroupModel> AdminGroupList { get; set; }
     }
+
+    public class AdminGroupModifyModel
+    {
+        public List<MenuModel> Depth1List { get; set; }
+        public List<MenuModel> Depth2List { get; set; }
+        public AdminGroupModel AdminGroup { get; set; }
+    }
+
+    public class AdminGroupInAdminListModel
+    {        
+        public int groupcode { get; set; }
+        public List<AdminGroupModel> AdminGroupList { get; set; }
+        public List<AdminModel> AdminList { get; set; }
+    }
 }

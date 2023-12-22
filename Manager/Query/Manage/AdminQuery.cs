@@ -58,5 +58,20 @@ namespace Manager.Query.Manage
                 "where adminid = @adminId";
             return MySql;
         }
+
+        public string select_admin_by_groupcode()
+        {
+            string MySql = "" +
+                    "set session transaction isolation level read uncommitted; " +
+                    "select " +
+                    "               a.adminid, a.adminname, a.adminpwd, a.groupcode, a.hp, a.authflag, a.pwderrcnt, a.createdt, " +
+                    "               b.groupname, b.groupwrite, b.groupread " +
+                    "from           admins as a " +
+                    "inner join     admin_groups as b on a.groupcode = b.groupcode " +
+                    "where          a.groupcode = @groupcode " +
+                    "and            a.delflag = 'N'; " +
+                    "set session transaction isolation level repeatable read;";
+            return MySql;
+        }
     }
 }

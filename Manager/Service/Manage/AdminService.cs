@@ -12,7 +12,9 @@ using System.Web;
 using System.Web.UI.WebControls;
 using System.Web.WebPages;
 using Manager.Common;
+using Manager.Models.Manage;
 using Manager.Query.Manage;
+using System.Security.Cryptography;
 
 namespace Manager.Service.Manage
 {
@@ -207,6 +209,42 @@ namespace Manager.Service.Manage
                     dbcon.Dispose();
                 }
             }
+        }
+
+        public List<AdminModel> getAdminListByGroupCode(int groupCode)
+        {
+            List<AdminModel> adminList = new List<AdminModel>();
+            using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+            {
+                dbcon.Open();
+
+                using (var cmd = new MySqlCommand(adminQuery.select_admin_by_groupcode(), dbcon))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(new MySqlParameter("@groupcode", groupCode));
+
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    
+                    while (dr.Read())
+                    {
+                        AdminModel admin = new AdminModel();
+                        admin.adminid = dr["adminid"].ToString();
+                        admin.adminname = dr["adminname"].ToString() ;
+                        admin.groupname = dr["groupname"].ToString();
+                        admin.hp = dr["hp"].ToString();
+                        admin.createdt = Convert.ToDateTime(dr["createdt"].ToString());
+                        adminList.Add(admin);
+                    }                     
+
+                    dr.Close();
+                }
+
+                dbcon.Close();
+                dbcon.Dispose();
+            }
+
+            return adminList;
         }
     }
 }

@@ -73,8 +73,8 @@ namespace Manager.Query.Manage
                 "            @groupdesc, " +
                 "            @groupwrite, " +
                 "            @groupread, " +
-                "            @createid, " +
-                "            @createip " +
+                "            @adminid, " +
+                "            @adminip " +
                 ")";
             return MySql;
         }
