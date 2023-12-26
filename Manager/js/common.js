@@ -1,4 +1,5 @@
 ﻿/* 대분류 변경 */
+
 function chg_MCode1(pageUrl) {
 	var mCode1 = document.getElementById("MCode1").value;
 	if (pageUrl == "HistoryList") {
@@ -15,7 +16,10 @@ function chg_MCode1(pageUrl) {
 			async		 : false,
 			data		 : "PageUrl=" + pageUrl + "&MCode1=" + mCode1,
 			dataType	 : "text",
-			success		 : function (data) {
+			headers: {
+				'RequestVerificationToken': getToken()
+			},
+			success: function (data) {
 							var splitData	 = data.split("|||||");
 							var result		 = splitData[0];
 							var rCode2		 = splitData[1];
@@ -65,6 +69,9 @@ function chg_CategoryCode1() {
 			async: false,
 			data: "categorycode1=" + sCode1,
 			dataType: "text",
+			headers: {
+				'RequestVerificationToken': getToken()
+			},
 			success: function (data) {
 				var splitData = data.split("|||||");
 				var result = splitData[0];
@@ -188,8 +195,8 @@ function add_MyMenu(menucode) {
 		async		 : false,
 		data		 : "menucode=" + menucode,
 		dataType	 : "text",
-		beforeSend: function(xhr){
-			xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+		headers: {
+			'RequestVerificationToken': getToken()
 		},
 		success		 : function (data) {
 			var splitData	 = data.split("|||||");
@@ -216,7 +223,7 @@ function add_MyMenu(menucode) {
 				return;
 			}
 		},
-		error		 : function (data) {
+		error: function (data) {
 			alert("처리 도중 오류가 발생하였습니다.");
 		}
 	});
@@ -240,13 +247,13 @@ function my_MenuList(b) {
 function my_MenuListExec() {
 	$.ajax({
 		type		 : "post",
-		url			 : "/common/ajax/mymnulist",
-		async		 : false,
-		dataType	 : "text",
-		beforeSend: function(xhr){
-			xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+		url			 : "/common/ajax/mymenulist",
+		async		 : false,		
+		dataType: "text",
+		headers: {
+			'RequestVerificationToken': getToken()
 		},
-		success		 : function (data) {
+		success: function (data) {
 			var splitData	 = data.split("|||||");
 			var result		 = splitData[0];
 			var cont		 = splitData[1];
@@ -263,15 +270,13 @@ function my_MenuListExec() {
 				return;
 			}
 		},
-		error		 : function (data) {
+		error: function (data) {
 			alert("처리 도중 오류가 발생하였습니다.");
 		}
 	});
 }
 
 function del_MyMenu(menuCode) {
-	var menuCode2 = "<%=menuCode2%>";
-
 	var conf = confirm("삭제 하시겠습니까?");
 	if (conf == true) {
 		$.ajax({
@@ -279,20 +284,18 @@ function del_MyMenu(menuCode) {
 			url			 : "/common/ajax/mymenudelete",
 			async		 : false,
 			data		 : "menucode=" + menuCode,
-			dataType	 : "text",
-			beforeSend: function(xhr){
-				xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+			dataType: "text",
+			headers: {
+				'RequestVerificationToken': getToken()
 			},
-			success		 : function (data) {
+			success: function (data) {
+				console.log(data)
 				var splitData	 = data.split("|||||");
 				var result		 = splitData[0];
 				var cont		 = splitData[1];
 
 				if (result == "OK") {
-					my_MenuList(1);
-					if (cont.indexOf(menuCode2) < 0) {
-						$("#aBtn").show();
-					}
+					my_MenuList(1);					
 					return;
 				}
 				else if (result == "LOGIN") {
@@ -303,7 +306,7 @@ function del_MyMenu(menuCode) {
 					return;
 				}
 			},
-			error		 : function (data) {
+			error: function (data) {
 				alert("처리 도중 오류가 발생하였습니다.");
 			}
 		});
@@ -316,11 +319,11 @@ function mod_DisNum(udType, menuCode) {
 		url			 : "/common/ajax/mymenudisplaynummodify",
 		async		 : false,
 		data		 : "udType=" + udType + "&menucode=" + menuCode,
-		dataType	 : "text",
-		beforeSend: function(xhr){
-			xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+		dataType: "text",
+		headers: {
+			'RequestVerificationToken': getToken()
 		},
-		success		 : function (data) {
+		success: function (data) {
 			var splitData = data.split("|||||");
 			var result = splitData[0];
 			var cont = splitData[1];
@@ -337,10 +340,19 @@ function mod_DisNum(udType, menuCode) {
 				return;
 			}
 		},
-		error		 : function (data) {
+		error: function (data) {
+			console.log(data)
 			alert("처리 도중 오류가 발생하였습니다.");
 		}
 	});
+}
+
+function getTokenName() {
+	return $("meta[name='_csrf_header']").attr('content');
+}
+
+function getToken() {
+	return $("meta[name='_csrf']").attr('content');
 }
 
 /* 30초후 자동로그아웃 */

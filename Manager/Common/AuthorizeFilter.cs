@@ -2,8 +2,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Security.Cryptography.X509Certificates;
 using System.Web;
+using System.Web.Helpers;
 using System.Web.ModelBinding;
 using System.Web.Mvc;
 using System.Web.Mvc.Razor;
@@ -33,7 +35,9 @@ namespace Manager.Common
             string sProgID = httpContext.Request.ServerVariables["URL"];
             string thisPage = httpContext.Request.ServerVariables["SCRIPT_NAME"];
             string returnPageType = Func.getReturnPageType(httpContext, thisPage);
-            string pageType= Func.getPageType(httpContext, thisPage);           
+            string pageType= Func.getPageType(httpContext, thisPage);
+            bool isRead = false;
+            bool isWrite = false;
 
             if (Func.GetCookie("adminid").IsEmpty())
             {
@@ -83,11 +87,18 @@ namespace Manager.Common
                 {
                     thisPage = "/" + thisUri[1] + "/" + thisUri[2];
                 }
-
                 MenuModel menuModel = menuService.getMenuInfoByMenuUrl(thisPage);
+
                 if (menuModel.menucode.IsEmpty() && !thisPage.Contains("/common"))
                 {
                     filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다.", returnPageType);
+                } else
+                {
+                    if (!menuModel.menucode.IsEmpty())
+                    {
+                        isRead = adminGroupModel.groupread.Equals("0") || adminGroupModel.groupread.Contains(menuModel.menucode);
+                        isWrite = adminGroupModel.groupwrite.Equals("0") || adminGroupModel.groupwrite.Contains(menuModel.menucode);
+                    }
                 }
 
                 if (httpContext.Request.HttpMethod.Equals("GET"))
@@ -107,6 +118,7 @@ namespace Manager.Common
 
                     if (pageType.Equals("ajax"))
                     {
+                        ValidateRequestHeader(httpContext);
                         if (httpContext.Request.ServerVariables["HTTP_REFERER"].IsEmpty())
                         {
                             filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다.", returnPageType);
@@ -120,9 +132,10 @@ namespace Manager.Common
                         }
                     }
 
-                    if (!adminGroupModel.groupread.Contains(menuModel.menucode))
+                    if (!isRead)
                     {
                         filterContext.Result = MessageConfig.AlertMessage("권한이 없습니다.", returnPageType);
+                        return;
                     }
 
                     PermissionModel permissionModel = new PermissionModel();
@@ -131,19 +144,18 @@ namespace Manager.Common
                         permissionModel.MenuCode1 = menuModel.menupcode;
                         permissionModel.MenuCode2 = menuModel.menucode;
                         permissionModel.MenuChoice = menuModel.menuchoice;
-                        permissionModel.isWrite = adminGroupModel.groupwrite.Contains(menuModel.menucode);
+                        permissionModel.isWrite = isWrite;
                         permissionModel.TopMenuList = getTopMenu(adminGroupModel.groupread);
                         permissionModel.LeftMenuList = getLeftMenu(menuModel.menupcode);
                         permissionModel.TopMenuName = getMenuName(menuModel.menupcode, permissionModel.TopMenuList);
                         permissionModel.LeftMenuName = getMenuName(menuModel.menucode, permissionModel.LeftMenuList);
-
                     }
                     else
                     {
                         permissionModel.MenuCode1 = menuModel.menupcode;
                         permissionModel.MenuCode2 = menuModel.menucode;
                         permissionModel.MenuChoice = menuModel.menuchoice;
-                        permissionModel.isWrite = adminGroupModel.groupwrite.Contains(menuModel.menucode);
+                        permissionModel.isWrite = isWrite;
                     }
 
                     filterContext.Controller.ViewBag.Permission = permissionModel;
@@ -152,19 +164,24 @@ namespace Manager.Common
                 }
                 else
                 {
-                    if (httpContext.Request.ServerVariables["HTTP_REFERER"].IsEmpty())
+                    if (pageType.Equals("ajax"))
                     {
+                        ValidateRequestHeader(httpContext);
+                    }
+
+                    if (httpContext.Request.ServerVariables["HTTP_REFERER"].IsEmpty())
+                    {                        
                         filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다.", returnPageType);
                     }
                     else
-                    {
+                    {   
                         if (!httpContext.Request.ServerVariables["HTTP_REFERER"].Contains(SetInfo.domain))
                         {
-                            filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다.", returnPageType);
+                            filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다11.", returnPageType);
                         }
                     }
 
-                    if (!adminGroupModel.groupwrite.Contains(menuModel.menucode))
+                    if (!isWrite && !thisPage.Contains("/common"))
                     {
                         filterContext.Result = MessageConfig.AlertMessage("권한이 없습니다.", returnPageType);
                     }
@@ -232,6 +249,24 @@ namespace Manager.Common
             }
 
             return retVal;
+        }
+
+        public void ValidateRequestHeader(HttpContextBase httpContext)
+        {   
+            string cookieToken = "";
+            string formToken = "";
+            
+            IEnumerable<string> tokenHeaders;
+            if (httpContext.Request.Headers["RequestVerificationToken"] != null)
+            {
+                string[] tokens = httpContext.Request.Headers["RequestVerificationToken"].Split(':');
+                if (tokens.Length == 2)
+                {
+                    cookieToken = tokens[0].Trim();
+                    formToken = tokens[1].Trim();
+                }
+            }            
+            AntiForgery.Validate(cookieToken, formToken);
         }
     }
 }

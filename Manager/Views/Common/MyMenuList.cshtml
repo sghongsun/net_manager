@@ -1,0 +1,34 @@
+﻿OK|||||
+@model Manager.Models.Manage.MyMenuChoiceListModel
+<table class="my-menu">
+    <colgroup>
+        <col style="width:250px;" />
+        <col style="width: 50px;" />
+        <col style="width: 50px;" />
+        <col style="width: 50px;" />
+    </colgroup>
+    <thead>
+        <tr>
+            <th colspan="4">즐겨찾기</th>
+        </tr>
+    </thead>
+    @if (Model.MyMenuChoiceList.Count > 0)
+    {
+        foreach (var item in Model.MyMenuChoiceList)
+        {
+            <tr>
+                <td><a href="@item.menuurl" style="color:blue">@item.menuname</a></td>
+                <td class="ac"><a onclick="mod_DisNum('U', '@item.menucode')" style="cursor:pointer;">↑</a></td>
+                <td class="ac"><a onclick="mod_DisNum('D', '@item.menucode')" style="cursor:pointer;">↓</a></td>
+                <td class="ac"><a onclick="del_MyMenu('@item.menucode')" style="cursor:pointer;">X</a></td>
+            </tr>
+        }
+    }
+    else
+    {
+        <tr>
+            <td colspan="4" class="ac">등록된 즐겨찾기 메뉴가 없습니다.</td>
+        </tr>
+    }
+
+</table>

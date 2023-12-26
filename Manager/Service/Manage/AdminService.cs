@@ -21,11 +21,11 @@ namespace Manager.Service.Manage
     public class AdminService
     {
         private AdminQuery adminQuery;
-        private MyMenuChoiceQuery myMenuChoiceQuery;
+        private MyMenuChoiceService myMenuChoiceService;
 
         public AdminService() { 
             this.adminQuery = new AdminQuery();
-            this.myMenuChoiceQuery = new MyMenuChoiceQuery();
+            this.myMenuChoiceService = new MyMenuChoiceService();
         }
 
         public string LoginProc()
@@ -102,7 +102,7 @@ namespace Manager.Service.Manage
             Func.SetCookie("adminid", adminid);
             Func.SetCookie("adminname", adminname);
             Func.SetCookie("admingroup", groupcode);
-            Func.SetCookie("menuchoice", getMenuChoice(mid));
+            Func.SetCookie("menuchoice", myMenuChoiceService.getMenuChoice(mid));
             Func.SetCookie("ip", Func.GetUserIP());            
 
             if (saveid.Equals("Y"))
@@ -117,41 +117,7 @@ namespace Manager.Service.Manage
 
             return "OK";
         }
-
-        public string getMenuChoice(string mid) 
-        {
-            string menuChoice = "";
-
-            using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
-            {
-                dbcon.Open();
-
-                using (var cmd = new MySqlCommand(myMenuChoiceQuery.select_admin_menu_choice_by_adminId(), dbcon))
-                {
-                    cmd.CommandType = CommandType.Text;
-                    cmd.Parameters.Add(new MySqlParameter("@adminId", mid));
-
-                    MySqlDataReader dr = cmd.ExecuteReader();
-
-                    StringBuilder sb = new StringBuilder();
-                    while (dr.Read())
-                    {
-                        sb.Append(dr["menucode"].ToString()).Append(",");
-                    }
-                    if (sb.Length > 0)
-                    {
-                        menuChoice = sb.Remove(sb.Length - 1, 1).ToString();
-                    }
-                    
-                    dr.Close();
-                }
-
-                dbcon.Close();
-                dbcon.Dispose();
-            }
-            return menuChoice;
-        }
-
+        
         public void LoginForPwdErrorUpdate(string mid)
         {
             using (TransactionScope ts = new TransactionScope())

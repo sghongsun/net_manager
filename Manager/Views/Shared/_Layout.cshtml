@@ -134,9 +134,9 @@
                         {
                             <span class="my-menu-btn">
                                 <a href="javascript:my_MenuList(0)" class="btn-d"><span>MY+</span></a>
-                                @if (Func.GetCookie("menuchoice").Contains(ViewBag.Permission.MenuCode2))
+                                @if (!Func.GetCookie("menuchoice").Contains(ViewBag.Permission.MenuCode2))
                                 {
-                                    <a href="javascript:add_MyMenu('@ViewBag.Permission.MenuCode2')" id="aBtn" class="btn-d"><span>즐겨찾기 추가</span></a>
+                                    <a href="javascript:add_MyMenu('@ViewBag.Permission.MenuCode2');" id="aBtn" class="btn-d"><span>즐겨찾기 추가</span></a>
                                 }
 
                             </span>

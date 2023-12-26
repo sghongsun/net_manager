@@ -142,8 +142,8 @@
                                     }
                                 </tr>
                                 @foreach (var depth2 in Model.Depth2List)
-                                {       
-                                    
+                                {
+
                                     if (depth2.menuuseflag.Equals("N"))
                                     {
                                         bgcolor = "#FFE6FE";
@@ -177,38 +177,41 @@
                                             {
                                                 <a href="#" onclick="del_Menu('@depth2.menupcode', '@depth2.menucode');" class="btn-c"><span>삭제</span></a>
                                             }
-                                            </td>
+                                        </td>
                                     </tr>
                                 }
                             </tbody>
                         </table>
                     </div>
 
-                    <form name="menu2form" method="post" action="/manage/menu/add" onsubmit="return chk_FieldC(this)">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="menuPCode" value="@ViewBag.MenuPCode">
-                        <div class="tb_layout_1 mt40">
-                            <table>
-                                <colgroup>
-                                    <col style="width: 15%;">
-                                    <col style="width: auto;">
-                                    <col style="width: 10%;">
-                                </colgroup>
-                                <tbody>
-                                    <tr>
-                                        <td class="title"><span class="required">메뉴명</span></td>
-                                        <td><input type="text" name="menuName" maxlength="20" class="input_text" style="width: 30%;"></td>
-                                        <td class="ar pr5 bdlN">&nbsp;</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="title"><span class="required">메뉴URL</span></td>
-                                        <td><input type="text" name="menuUrl" maxlength="100" class="input_text" style="width: 80%;"></td>
-                                        <td class="ar pr5 bdlN"><button class="btn-c"><span>입력</span></button></td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </form>
+                    @if (ViewBag.Permission.isWrite)
+                    {
+                        <form name="menu2form" method="post" action="/manage/menu/add" onsubmit="return chk_FieldC(this)">
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="menuPCode" value="@ViewBag.MenuPCode">
+                            <div class="tb_layout_1 mt40">
+                                <table>
+                                    <colgroup>
+                                        <col style="width: 15%;">
+                                        <col style="width: auto;">
+                                        <col style="width: 10%;">
+                                    </colgroup>
+                                    <tbody>
+                                        <tr>
+                                            <td class="title"><span class="required">메뉴명</span></td>
+                                            <td><input type="text" name="menuName" maxlength="20" class="input_text" style="width: 30%;"></td>
+                                            <td class="ar pr5 bdlN">&nbsp;</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="title"><span class="required">메뉴URL</span></td>
+                                            <td><input type="text" name="menuUrl" maxlength="100" class="input_text" style="width: 80%;"></td>
+                                            <td class="ar pr5 bdlN"><button class="btn-c"><span>입력</span></button></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </form>
+                    }
                 </td>
             </tr>
         </tbody>

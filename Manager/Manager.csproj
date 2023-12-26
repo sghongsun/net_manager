@@ -178,6 +178,7 @@
     <Compile Include="Common\SHA.cs" />
     <Compile Include="Common\ValidationFilter.cs" />
     <Compile Include="Controllers\AdminGroupController.cs" />
+    <Compile Include="Controllers\CommonController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\LoginController.cs" />
     <Compile Include="Controllers\MenuController.cs" />
@@ -189,16 +190,15 @@
     <Compile Include="Models\Manage\AdminGroupModel.cs" />
     <Compile Include="Models\Manage\AdminModel.cs" />
     <Compile Include="Models\Manage\MenuModel.cs" />
+    <Compile Include="Models\Manage\MyMenuChoiceModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Query\Manage\MyMenuChoiceQuery.cs" />
     <Compile Include="Query\Manage\AdminGroupQuery.cs" />
     <Compile Include="Query\Manage\AdminQuery.cs" />
     <Compile Include="Query\Manage\MenuQuery.cs" />
     <Compile Include="Request\Manage\AdminGroupRequest.cs" />
-    <Compile Include="Request\Manage\MenuAddRequest.cs" />
-    <Compile Include="Request\Manage\MenuDeleteRequest.cs" />
-    <Compile Include="Request\Manage\MenuDisplayNumModifyRequest.cs" />
-    <Compile Include="Request\Manage\MenuModifyRequest.cs" />
+    <Compile Include="Request\Manage\MenuRequest.cs" />
+    <Compile Include="Request\Manage\MyMenuChocieRequest.cs" />
     <Compile Include="Service\Manage\AdminGroupService.cs" />
     <Compile Include="Service\Manage\AdminService.cs" />
     <Compile Include="Service\Manage\MenuService.cs" />
@@ -389,6 +389,8 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\MyMenuChoice\" />
+    <Folder Include="Views\MyMenu\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="css\fonts\NanumGothic.eot" />
@@ -407,6 +409,7 @@
     <Content Include="Views\AdminGroup\Modify.cshtml" />
     <Content Include="Views\Shared\_LayoutPopup.cshtml" />
     <Content Include="Views\AdminGroup\GroupInAdminList.cshtml" />
+    <Content Include="Views\Common\MyMenuList.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>
