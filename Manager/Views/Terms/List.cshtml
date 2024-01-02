@@ -43,7 +43,7 @@
 
 <form name="form1" method="get" action="">
     <div class="tb_data_1">
-        <div class="tip" [전체 @string.Format("{0:#,###}", @Model.Search.pagination.totalRecordCount) 건]></div>
+        <div class="tip">[전체 @string.Format("{0:#,###}", @Model.Search.pagination.totalRecordCount) 건]</div>
         @if (ViewBag.Permission.isWrite)
         {
             <div class="btnRight3">
@@ -73,7 +73,7 @@
                     <tr>
                         <td>@Html.Raw((@Model.Search.pagination.totalRecordCount - ((@Model.Search.page - 1) * @Model.Search.recordsize)) - @num)</td>
                         <td>
-                            @if (ViewBag.isWrite)
+                            @if (ViewBag.Permission.isWrite)
                             {
                                 <a onclick="moveView('/manage/terms/modify', @item.idx);" style="color:#0000ff; cursor: pointer;">@item.title</a>
                             }

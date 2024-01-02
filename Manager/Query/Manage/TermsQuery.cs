@@ -25,7 +25,7 @@ namespace Manager.Query.Manage
             string MySql = "" +
                 "set session transaction isolation level read uncommitted; " +
                 "select " +
-                "               IFNULL(COUNT(idx), 0) as totalcount " +
+                "               idx, title, place, createid, createdt " +
                 "from           terms " +
                 "where          delflag = 'N' " +
                 "#searchWhere " +
