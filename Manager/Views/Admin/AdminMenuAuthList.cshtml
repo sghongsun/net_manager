@@ -1,0 +1,80 @@
+﻿@using Manager.Common
+@model Manager.Models.Manage.MenuAuthListModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="/js/manage/admin/admin.js?ver=@Func.GetNow()"></script>
+<style>
+    .tb_data_1 {
+        margin-top: 0 !important;
+    }
+
+    .line2 th:first-child {
+        border-left: 1px solid #d8d8d8 !important;
+    }
+</style>
+
+<table class="tab_table_nl" style="margin-top:0 !important;">
+    <colgroup>
+        <col style="width:150px;">
+        <col style="width:1px;">
+        <col style="width:150px;">
+        <col style="width:auto;">
+    </colgroup>
+    <tbody>
+        <tr>
+            <td class="off"><a href="/manage/admin/list">관리자</a></td>
+            <td></td>
+            <td class="on"><a href="/manage/admin/menuauth">메뉴별 권한 현황</a></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<div class="tb_data_1">
+    <table class="ga">
+        <colgroup>
+            <col style="width:  20%;" />
+            <col style="width:  20%;" />
+            <col style="width:  15%;" />
+            <col style="width:  15%;" />
+            <col style="width:  15%;" />
+            <col style="width:  15%;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th rowspan="2">대분류</th>
+                <th rowspan="2">소분류</th>
+                <th colspan="2">읽기권한</th>
+                <th colspan="2">쓰기권한</th>
+            </tr>
+            <tr class="line2">
+                <th>그룹수</th>
+                <th>관리자수</th>
+                <th>그룹수</th>
+                <th>관리자수</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.MenuAuthList)
+        {
+            <tr>
+                <td>@item.menuname1</td>
+                <td>@item.menuname2</td>
+                <td>
+                    <a onclick="pop_Info('@item.menucode1', '@item.menucode2', 'R', 'G')" style="color:blue; cursor: pointer;">@item.readgroupcount</a>
+                </td>
+                <td>
+                    <a onclick="pop_Info('@item.menucode1', '@item.menucode2', 'R', 'A')" style="color:blue; cursor: pointer;">@item.readusercount</a>
+                </td>
+                <td>
+                    <a onclick="pop_Info('@item.menucode1', '@item.menucode2', 'W', 'G')" style="color:blue; cursor: pointer;">@item.writegroupcount</a>
+                </td>
+                <td>
+                    <a onclick="pop_Info('@item.menucode1', '@item.menucode2', 'W', 'A')" style="color:blue; cursor: pointer;">@item.writeusercount</a>
+                </td>                
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

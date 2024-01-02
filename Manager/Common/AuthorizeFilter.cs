@@ -177,7 +177,7 @@ namespace Manager.Common
                     {   
                         if (!httpContext.Request.ServerVariables["HTTP_REFERER"].Contains(SetInfo.domain))
                         {
-                            filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다11.", returnPageType);
+                            filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다.", returnPageType);
                         }
                     }
 
@@ -255,8 +255,7 @@ namespace Manager.Common
         {   
             string cookieToken = "";
             string formToken = "";
-            
-            IEnumerable<string> tokenHeaders;
+                        
             if (httpContext.Request.Headers["RequestVerificationToken"] != null)
             {
                 string[] tokens = httpContext.Request.Headers["RequestVerificationToken"].Split(':');

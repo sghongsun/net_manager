@@ -126,8 +126,8 @@ function chk_AdminID() {
         async		 : true,
         data		 : "AdminID=" + adminID,
         dataType	 : "text",
-        beforeSend: function(xhr){
-            xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+        headers: {
+            'RequestVerificationToken': getToken()
         },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
@@ -222,8 +222,8 @@ function mod_ListAdmin(adminID, groupCode) {
         async		 : false,
         data		 : "adminid=" + adminID + "&groupcode=" + groupCode,
         dataType	 : "text",
-        beforeSend: function(xhr){
-            xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+        headers: {
+            'RequestVerificationToken': getToken()
         },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
@@ -265,8 +265,8 @@ function lay_PasswordModifyForm() {
         async		 : false,
         data		 : "",
         dataType	 : "text",
-        beforeSend: function(xhr){
-            xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+        headers: {
+            'RequestVerificationToken': getToken()
         },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
@@ -333,7 +333,10 @@ function lay_PasswordModify() {
             async		 : false,
             data		 : $("#chgPwdForm").serialize(),
             dataType	 : "text",
-            success		 : function (data) {
+            headers: {
+                'RequestVerificationToken': getToken()
+            },
+            success: function (data) {
                 var splitData	 = data.split("|||||");
                 var result		 = splitData[0];
                 var cont		 = splitData[1];
@@ -522,8 +525,8 @@ function lay_MyPasswordModifyForm() {
         data		 : "",
         async		 : false,
         dataType	 : "text",
-        beforeSend: function(xhr){
-            xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+        headers: {
+            'RequestVerificationToken': getToken()
         },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
@@ -598,7 +601,10 @@ function lay_MyPasswordModify() {
             url			 : "/manage/admin/myinfopwdmodifyok",
             async		 : false,
             data		 : $("#chgPwdForm").serialize(),
-            dataType	 : "text",
+            dataType: "text",
+            headers: {
+                'RequestVerificationToken': getToken()
+            },
             success		 : function (data) {
                 var splitData	 = data.split("|||||");
                 var result		 = splitData[0];

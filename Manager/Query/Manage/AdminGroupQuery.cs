@@ -103,22 +103,25 @@ namespace Manager.Query.Manage
 
         public string select_admin_group_by_list_for_adminlist_group_search(string authType)
         {
+            string groupWhere = "";
+            if (authType.Equals("R"))
+            {
+                groupWhere = "and groupread LIKE CONCAT('%', @MCode2, '%'); ";
+            }
+            else
+            {
+                groupWhere = "and groupwrite LIKE CONCAT('%', @MCode2, '%'); ";
+            }
+
             string MySql = "" +
                 "set session transaction isolation level read uncommitted; " +
                 "select " +
                 "               groupcode, groupname, groupdesc, createdt," +
                 "               (select IFNULL(COUNT(adminid), 0) from admins where groupcode = admin_groups.groupcode and delflag = 'N') as admincnt " +
                 "from           admin_groups " +
-                "where          groupcode != '1000' ";
-            if (authType.Equals("R"))
-            {
-                MySql += "and groupread LIKE CONCAT('%', @menucode, '%'); ";
-            }
-            else
-            {
-                MySql += "and groupwrite LIKE CONCAT('%', @menucode, '%'); ";
-            }
-            MySql += "set session transaction isolation level repeatable read;";
+                "where          groupcode != '1000' " +
+                "" + groupWhere +
+                "set session transaction isolation level repeatable read;";
             return MySql;
         }
     }

@@ -74,7 +74,7 @@ namespace Manager
                     catch { }
                     finally
                     {
-                        Response.Redirect("/error");
+                        Response.Redirect("/error?iii="+ parameterValue);
                     }
                 }
             }

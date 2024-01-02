@@ -257,5 +257,40 @@ namespace Manager.Service.Manage
                 }
             }
         }
+
+        public List<AdminGroupModel> getListForAdminList(AdminMenuAuthRequest adminMenuAuthRequest)
+        {
+            List<AdminGroupModel> adminGroupList = new List<AdminGroupModel>();
+            using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+            {
+                dbcon.Open();
+
+                using (var cmd = new MySqlCommand(adminGroupQuery.select_admin_group_by_list_for_adminlist_group_search(adminMenuAuthRequest.authType), dbcon))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(new MySqlParameter("@MCode2", adminMenuAuthRequest.MCode2));
+
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        AdminGroupModel adminGroupModel = new AdminGroupModel();
+                        adminGroupModel.groupcode = Convert.ToInt32(dr["groupcode"].ToString());
+                        adminGroupModel.groupname = dr["groupname"].ToString();
+                        adminGroupModel.groupdesc = dr["groupdesc"].ToString();
+                        adminGroupModel.admincnt = Convert.ToInt32(dr["admincnt"].ToString());
+                        adminGroupModel.createdt = Convert.ToDateTime(dr["createdt"]);
+                        adminGroupList.Add(adminGroupModel);
+                    }
+
+                    dr.Close();
+                }
+
+                dbcon.Close();
+                dbcon.Dispose();
+            }
+
+            return adminGroupList;
+        }
     }
 }

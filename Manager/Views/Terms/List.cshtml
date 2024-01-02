@@ -1,0 +1,104 @@
+﻿@using Manager.Common
+@model Manager.Models.Manage.TermsListModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int num = 0;
+}
+<script type="text/javascript" src="/js/manage/terms/terms.js?ver=@Func.GetNow()"></script>
+
+<form name="searchForm" id="form" method="get" action="/manage/terms/list" onsubmit="return true">
+    <input type="hidden" name="page" id="page" value="@Model.Search.page" />
+    <div class="filterArea">
+        <div class="tb_layout_1">
+
+            <table>
+                <colgroup>
+                    <col style="width: 150px;" />
+                    <col style="width: auto;" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="title">검색조건</td>
+                        <td>
+                            <select name="searchtype" id="searchtype">
+                                <option value="title">제목</option>
+                                <option value="contents">내용</option>
+                            </select>
+                            <script>
+                                $("#searchtype").val('@Model.Search.searchtype');
+                            </script>
+                            <input type="text" name="keyword" maxlength="50" class="input_text" value="@Model.Search.keyword" />
+                            <a href="javascript:getSearch()" class="btn-c"><span>검색</span></a> &nbsp;
+                            <a href="javascript:location.href=location.pathname;" class="btn-d"><span>리스트</span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</form>
+
+
+<form name="form1" method="get" action="">
+    <div class="tb_data_1">
+        <div class="tip" [전체 @string.Format("{0:#,###}", @Model.Search.pagination.totalRecordCount) 건]></div>
+        @if (ViewBag.Permission.isWrite)
+        {
+            <div class="btnRight3">
+                <a href="/manage/terms/add" class="btn-c"><span>입력</span></a>
+            </div>
+        }
+        <table>
+            <colgroup>
+                <col style="width:   8%;" />
+                <col style="width:   30%;" />
+                <col style="width: auto;" />
+                <col style="width:  10%;" />
+                <col style="width:  10%;" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th>번호</th>
+                    <th>제목</th>
+                    <th>적용위치</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.TermsList)
+                {
+                    <tr>
+                        <td>@Html.Raw((@Model.Search.pagination.totalRecordCount - ((@Model.Search.page - 1) * @Model.Search.recordsize)) - @num)</td>
+                        <td>
+                            @if (ViewBag.isWrite)
+                            {
+                                <a onclick="moveView('/manage/terms/modify', @item.idx);" style="color:#0000ff; cursor: pointer;">@item.title</a>
+                            }
+                            else
+                            {
+                                @item.title
+                            }           
+                        </td>                        
+                        <td>@item.place</td>
+                        <td>@item.createid</td>
+                        <td>@item.createdt.ToString("yyyy-MM-dd")</td>
+                    </tr>
+                    num++;
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
+
+@if (Model.Search.pagination != null)
+{
+    <div class="posR">
+        <div class="paging pgDown">
+            @Html.Raw(Func.PagingHtml(Model.Search))
+        </div>
+    </div>
+}
+

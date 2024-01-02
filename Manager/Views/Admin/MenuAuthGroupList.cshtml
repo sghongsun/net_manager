@@ -1,0 +1,113 @@
+﻿@using Manager.Common
+@model Manager.Models.Manage.MenuAuthGroupListModel
+@{
+    Layout = "~/Views/Shared/_LayoutPopup.cshtml";
+    int num = 1;
+}
+<script type="text/javascript" src="/js/manage/admin/admin.js?ver=@Func.GetNow()"></script>
+<style>
+    .tab_table_nl {
+        margin-top: 0 !important;
+    }
+</style>
+<table class="tab_table_nl">
+    <colgroup>
+        <col style="width:150px;" />
+        <col style="width:1px;" />
+        <col style="width:150px;" />
+        <col style="width:auto;" />
+    </colgroup>
+    <tbody>
+        <tr>
+            <td class="on "><a href="/manage/admin/popup/authgrouplist?MCode1=@Model.adminMenuAuthRequest.MCode1&MCode2=@Model.adminMenuAuthRequest.MCode2&authType=@Model.adminMenuAuthRequest.authType">메뉴권한 그룹</a></td>
+            <td></td>
+            <td class="off"><a href="/manage/admin/popup/authadminlist?MCode1=@Model.adminMenuAuthRequest.MCode1&MCode2=@Model.adminMenuAuthRequest.MCode2&authType=@Model.adminMenuAuthRequest.authType">메뉴권한 관리자</a></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<form name="form" method="get" action="/manage/admin/popup/authgrouplist" onsubmit="return true" autocomplete="off">
+    <div class="filterArea">
+        <div class="tb_layout_1">
+
+            <table>
+                <colgroup>
+                    <col style="width: 150px;" />
+                    <col style="width: auto;" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="title">분류</td>
+                        <td colspan="3">
+                            <select name="MCode1" id="MCode1" class="input_text" onchange="chg_MCode1('AdminList')">
+                                @foreach (var depth1 in Model.Depth1List)
+                                {
+                                    <option value="@depth1.menucode">@depth1.menuname</option>
+                                }
+                                </select>
+                            <script type="text/javascript">
+                                $("#MCode1").val('@Model.adminMenuAuthRequest.MCode1');
+                            </script>
+
+                            <select name="MCode2" id="MCode2" class="input_text">
+                                @foreach (var depth2 in Model.Depth2List)
+                                {
+                                    <option value="@depth2.menucode">@depth2.menuname</option>
+                                }
+                            </select>
+                            <script type="text/javascript">
+                                $("#MCode2").val('@Model.adminMenuAuthRequest.MCode2');
+                            </script>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="title">검색조건</td>
+                        <td>
+                            <label><span style="display:inline-block; width:110px;"><input type="radio" name="authType" value="R" @if (Model.adminMenuAuthRequest.authType.Equals("R")) { @Html.Encode("checked") } />읽기</span></label>
+                            <label><span style="display:inline-block; width:110px;"><input type="radio" name="authType" value="W" @if (Model.adminMenuAuthRequest.authType.Equals("W")) { @Html.Encode("checked") } />쓰기</span></label>
+                            <a href="javascript:document.form.submit()" class="btn-c"><span>검색</span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</form>
+
+<div class="tb_data_1">
+    <div class="tip"></div>
+    <div class="btnRight3">[전체 @string.Format("{0:#,###}", @Model.GroupList.Count) 건]</div>
+    <table>
+        <colgroup>
+            <col style="width:  10%;" />
+            <col style="width:  20%;" />
+            <col style="width: auto;" />
+            <col style="width:  15%;" />
+            <col style="width:  20%;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>그룹명</th>
+                <th>그룹설명</th>
+                <th>관리자수</th>
+                <th>등록일</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.GroupList)
+            {
+                <tr>
+                    <td>@num</td>
+                    <td>@item.groupname</td>
+                    <td>@item.groupdesc</td>
+                    <td>@item.admincnt</td>
+                    <td>@item.createdt.ToString("yyyy-MM-dd")</td>
+                </tr>
+                num++;
+            }
+        </tbody>
+    </table>
+</div>

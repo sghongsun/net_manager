@@ -557,9 +557,43 @@ namespace Manager.Service.Manage
             return "OK";
         }
 
+        public List<MenuAuthModel> getMenuAuthList()
+        {
+            List<MenuAuthModel> menuAuthList = new List<MenuAuthModel>();
 
+            using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+            {
+                dbcon.Open();
 
+                using (var cmd = new MySqlCommand(menuQuery.select_admin_menu_by_list_For_menuAuth(), dbcon))
+                {
+                    cmd.CommandType = CommandType.Text;
 
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    while (dr.Read())
+                    {
+                        MenuAuthModel menuAuth = new MenuAuthModel();
+                        menuAuth.menucode1 = dr["menucode1"].ToString();
+                        menuAuth.menuname1 = dr["menuname1"].ToString();
+                        menuAuth.menucode2 = dr["menucode2"].ToString();
+                        menuAuth.menuname2 = dr["menuname2"].ToString();
+                        menuAuth.readgroupcount = Convert.ToInt32(dr["readgroupcount"].ToString());
+                        menuAuth.readusercount = Convert.ToInt32(dr["readusercount"].ToString());
+                        menuAuth.writegroupcount = Convert.ToInt32(dr["writegroupcount"].ToString());
+                        menuAuth.writeusercount = Convert.ToInt32(dr["writeusercount"].ToString());
+                        menuAuthList.Add(menuAuth);
+                    }
+
+                    dr.Close();
+                }
+
+                dbcon.Close();
+                dbcon.Dispose();
+            }
+
+            return menuAuthList;
+        }
 
         public string MenuUrlCheck(string menuCode, string menuUrl)
         {

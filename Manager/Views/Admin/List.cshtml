@@ -1,0 +1,160 @@
+﻿@using Manager.Common
+@model Manager.Models.Manage.AdminSearchListModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int num = 0;
+}
+<script type="text/javascript" src="/js/manage/admin/admin.js?ver=@Func.GetNow()"></script>
+
+<table class="tab_table_nl" style="margin-top:0 !important;">
+    <colgroup>
+        <col style="width:150px;">
+        <col style="width:1px;">
+        <col style="width:150px;">
+        <col style="width:auto;">
+    </colgroup>
+    <tbody>
+        <tr>
+            <td class="on"><a href="/manage/admin/list">관리자</a></td>
+            <td></td>
+            <td class="off"><a href="/manage/admin/menuauth">메뉴별 권한 현황</a></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<form name="searchForm" id="form" method="get" action="/manage/admin/list" onsubmit="return true">
+    <input type="hidden" th:name="page" th:id="page" value="@Model.Search.page" />
+    <div class="filterArea">
+        <div class="tb_layout_1">
+
+            <table>
+                <colgroup>
+                    <col style="width: 150px;" />
+                    <col style="width: auto;" />
+                </colgroup>
+                <tbody>
+                    <tr>
+                        <td class="title">검색조건</td>
+                        <td>
+                            <select name="groupcode" id="groupcode">
+                                <option value="">그룹선택</option>
+                                @foreach (var group in Model.AdminGroupList)
+                                {
+                                    <option value="@group.groupcode" @if (group.groupcode == Convert.ToInt32(Model.Search.groupcode)) { @Html.Encode("selected") }>@group.groupname</option>
+                                }
+                            </select>
+                            <select name="searchtype" id="searchtype">
+                                <option value="adminname">이름</option>
+                                <option value="adminid">아이디</option>
+                            </select>
+                            <script>
+                                $("#searchtype").val("@Model.Search.searchtype");
+                            </script>
+                            <input type="text" name="keyword" maxlength="50" class="input_text" value="@Model.Search.keyword" />
+                            <a href="javascript:getSearch();" class="btn-c"><span>검색</span></a> &nbsp;
+                            <a href="javascript:location.href=location.pathname;" class="btn-d"><span>리스트</span></a>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</form>
+
+
+<form name="form1" method="get" action="">
+
+    <div class="tb_data_1">
+        <div class="tip">[전체 @string.Format("{0:#,###}", @Model.Search.pagination.totalRecordCount) 건]</div>
+        @if (ViewBag.Permission.isWrite)
+        {
+            <div class="btnRight3">
+                <a href="javascript:mod_ListAllAdmin()" class="btn-c"><span>일괄수정</span></a>
+                <a href="/manage/admin/add" class="btn-c" style="cursor: pointer;"><span>입력</span></a>
+            </div>
+        }
+        <table>
+            <colgroup>
+                <col style="width:   5%;" />
+                <col style="width:  15%;" />
+                <col style="width:  15%;" />
+                <col style="width:  20%;" />
+                <col style="width:  10%;" />
+                <col style="width:  10%;" />
+                <col style="width: auto;" />
+                <col style="width:  10%;" />
+            </colgroup>
+            <thead>
+                <tr>
+                    <th><input type="checkbox" name="All_Idx" id="All_Idx" /></th>
+                    <th>이름</th>
+                    <th>아이디</th>
+                    <th>핸드폰</th>
+                    <th>핸드폰인증</th>
+                    <th>비밀번호오류</th>
+                    <th>그룹</th>
+                    <th>수정</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.AdminList)
+                {
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="AdminID" value="@item.adminid" />
+                        </td>
+                        <td>
+                            @if (ViewBag.Permission.isWrite)
+                            {
+                                <a onclick="pop_AdminInfo('@item.adminid')" style="color:#0000ff; cursor: pointer;">@item.adminname</a>
+                            }
+                            else
+                            {
+                                @item.adminname
+                            }
+                        </td>
+                        <td>@item.adminid</td>
+                        <td>@item.hp</td>
+                        <td>@item.authflag</td>
+                        <td>@item.pwderrcnt</td>
+                        <td>
+                            <select name="GroupCode" style="width:90%">
+                                @foreach (var group in Model.AdminGroupList)
+                                {
+                                    <option value="@group.groupcode" @if (group.groupcode == item.groupcode) { @Html.Encode("selected") }>@group.groupname</option>
+                                }
+                            </select>
+                        </td>
+                        <td>
+                            <a onclick="mod_ListOneAdmin(@num)" class="btn-c" style="cursor: pointer;"><span>수정</span></a>
+                        </td>
+                    </tr>
+                    num++;
+                }
+            </tbody>
+        </table>
+    </div>
+</form>
+
+@if (Model.Search.pagination != null)
+{
+    <div class="posR">
+        <div class="paging pgDown">
+            @Html.Raw(Func.PagingHtml(Model.Search))
+        </div>
+    </div>
+}
+
+<script type="text/javascript">
+    /* 전체체크박스 */
+    $("#All_Idx").click(function () {
+        if ($("#All_Idx").prop("checked")) {
+            $("input:checkbox[name='AdminID']").prop("checked", true);
+        } else {
+            $("input:checkbox[name='AdminID']").prop("checked", false);
+        }
+    });
+</script>

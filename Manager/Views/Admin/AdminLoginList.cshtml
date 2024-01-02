@@ -1,0 +1,78 @@
+﻿@using Manager.Common
+@model Manager.Models.Manage.AdminLoginListModel
+@{
+    Layout = "~/Views/Shared/_LayoutPopup.cshtml";
+
+    int num = 0;
+}
+<script type="text/javascript" src="/js/manage/admin/admin.js?ver=@Func.GetNow()"></script>
+<style>
+    .tab_table_nl {
+        margin-top: 0 !important;
+    }
+
+    .tb_data_1 {
+        margin-top: 0 !important;
+    }
+</style>
+<table class="tab_table_nl">
+    <colgroup>
+        <col style="width:150px;" />
+        <col style="width:1px;" />
+        <col style="width:150px;" />
+        <col style="width:auto;" />
+    </colgroup>
+    <tbody>
+        <tr>
+            <td class="off "><a href="/manage/admin/popup/admininfo/@ViewBag.adminid">관리자 정보</a></td>
+            <td></td>
+            <td class="on"><a href="/manage/admin/popup/loginlist/@ViewBag.adminid">로그인 정보</a></td>
+            <td></td>
+        </tr>
+    </tbody>
+</table>
+
+<form name="searchForm" id="searchForm" method="get">
+    <input type="hidden" name="page" id="page" value="@Model.Search.page" />
+</form>
+<div class="tb_data_1">
+    <div class="tip"></div>
+    <div class="btnRight3">[전체 @string.Format("{0:#,###}", @Model.Search.pagination.totalRecordCount) 건]</div>
+    <table>
+        <colgroup>
+            <col style="width:  10%;" />
+            <col style="width:  25%;" />
+            <col style="width:  25%;" />
+            <col style="width: auto;" />
+        </colgroup>
+        <thead>
+            <tr>
+                <th>No.</th>
+                <th>아이디</th>
+                <th>아이피</th>
+                <th>일자</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.AdminLoginList)
+            {
+                <tr>
+                    <td>@Html.Raw((@Model.Search.pagination.totalRecordCount-((@Model.Search.page-1) * @Model.Search.recordsize))-@num)</td>
+                    <td>@item.adminid</td>
+                    <td>@item.ip</td>
+                    <td>@item.logindt.ToString("yyyy-MM-dd HH:mm:ss")</td>
+                </tr>
+
+                num++;
+            }
+        </tbody>
+    </table>
+</div>
+@if (Model.Search.pagination != null)
+{
+    <div class="posR">
+        <div class="paging pgDown">
+            @Html.Raw(Func.PagingHtml(Model.Search))
+        </div>
+    </div>
+}

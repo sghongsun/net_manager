@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using System.Web.WebPages;
 using Manager.Common;
 using Manager.Service.Manage;
+using Manager.Request;
 
 namespace Manager.Controllers
 {
@@ -25,20 +26,19 @@ namespace Manager.Controllers
             return View();
         }
 
-        [HttpPost, ValidateAntiForgeryToken]        
+        [HttpPost, ValidateAntiForgeryToken, ValidationFilter]        
         [Route("login")]
-        public ActionResult LoginOk(string returnUrl)
+        public ActionResult LoginOk(LoginRequest loginRequest)
         {
-            string result = adminService.LoginProc();
+            string result = adminService.LoginProc(loginRequest);
             if (result.Equals("OK"))
-            {
-                string ProgID = Func.getRequestFormToString("ProgID");
-                if (ProgID.IsEmpty())
+            {                
+                if (loginRequest.ProgID.IsEmpty())
                 {
-                    ProgID = "/";
+                    loginRequest.ProgID = "/";
                 }
 
-                Response.Redirect(ProgID);
+                Response.Redirect(loginRequest.ProgID);
             }
             return MessageConfig.AlertMessage(result, "history.back();");            
         }

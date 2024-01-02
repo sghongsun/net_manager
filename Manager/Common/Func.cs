@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Manager.Request;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography;
@@ -158,77 +159,44 @@ namespace Manager.Common
             return sessionName;
         }
 
-        public static string PagingHtml(int totalCount, int page, int pageSize, int pageLimit, string values)
+        public static string PagingHtml(Search search)
         {
             string html = "";
-            int pageCount = (int)((totalCount - 1) / pageSize) + 1;
-            int startPage = page - ((page - 1) % pageLimit);
+            string classon = "";
 
-
-            if (totalCount > 0)
+            if (search.pagination.existPrevPage)
             {
-                int y = (int)((page - 1) / pageLimit) * pageLimit + 1;
-                if (values != "")
-                {
-                    values = "&" + values;
-                }
-
-                if (y == 1)
-                {
-                    html += "<a>◀</a>\r\n";
-                }
-                else
-                {
-                    html += "<a href='?Page=" + (y - pageLimit).ToString() + values + "'>◀</a>\r\n";
-                }
-
-                int x = 1;
-                for (int i = startPage; i <= startPage + pageLimit - 1; i++)
-                {
-                    if (i == page)
-                    {
-                        if (i < pageCount && x < pageLimit)
-                        {
-                            html += "						<span><a href='?Page=" + i.ToString() + values + "' class=on>" + i.ToString() + "</a></span>\r\n";
-                        }
-                        else
-                        {
-                            html += "						<a href='?Page=" + i.ToString() + values + "' class=on>" + i.ToString() + "</a>\r\n";
-                        }
-                    }
-                    else
-                    {
-                        if (i < pageCount && x < pageLimit)
-                        {
-                            html += "						<span><a href='?Page=" + i.ToString() + values + "'>" + i.ToString() + "</a></span>\r\n";
-                        }
-                        else
-                        {
-                            html += "						<a href='?Page=" + i.ToString() + values + "'>" + i.ToString() + "</a>\r\n";
-                        }
-                    }
-
-                    if (i >= pageCount)
-                    {
-                        break;
-                    }
-
-                    y++;
-                    x++;
-                }
-
-                if (startPage + pageLimit > pageCount)
-                {
-                    html += "						<a>▶</a>\r\n";
-                }
-                else
-                {
-                    html += "						<a href='?Page=" + y.ToString() + values + "'>▶</a>\r\n";
-                }
+                html += "<a href='javascript:void(0)' onclick='movePage(" + (search.pagination.startPage - search.pagesize) + ");'>◀</a>\r\n";
+            }
+            else
+            {
+                html += "<a>◀</a>\r\n";
             }
 
-
-
+            for (int i = search.pagination.startPage; i <= search.pagination.endPage; i++)
+            {
+                classon = "";
+                if (i == search.page)
+                {
+                    classon = " class=on";
+                }
+                if (i < search.pagination.endPage)
+                {
+                    html += "<span><a href='javascript:void(0);' onclick='movePage(" + i + ");'" + classon + ">" + i + "</a></span>\r\n";
+                }
+                else
+                {
+                    html += "<a href='javascript:void(0);' onclick='movePage(" + i + ");'" + classon + ">" + i + "</a>\r\n";
+                }
+            }
+            if(search.pagination.existNextPage)
+            {
+                html += "<a href='javascript:void(0)' onclick='movePage(" + (search.pagination.endPage + 1) + ");'>▶</a>\r\n";
+            }
+            else
+            {
+                html += "<a>▶</a>\r\n";
+            }
             return html;
         }
 
