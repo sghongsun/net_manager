@@ -5,7 +5,7 @@ using System.Linq;
 using System.Web;
 
 namespace Manager.Models.Manage
-{    
+{
     public class TermsModel
     {
         public int idx { get; set; }
@@ -19,6 +19,12 @@ namespace Manager.Models.Manage
     public class TermsListModel
     {
         public List<TermsModel> TermsList { get; set; }
+        public TermsSearch Search { get; set; }
+    }
+
+    public class TermsModifyModel
+    {
+        public TermsModel Terms { get; set; }
         public TermsSearch Search { get; set; }
     }
 }

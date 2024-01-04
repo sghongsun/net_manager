@@ -87,7 +87,6 @@
                             <a href="@menu.menuurl">@menu.menuname</a>
                         </li>
                     }
-
                 </ul>
                 <ul class="topMenu">
                     <li><span class="name">@Func.GetCookie("adminname")</span></li>
@@ -105,7 +104,7 @@
                     {
                         foreach (var menu in ViewBag.Permission.LeftMenuList)
                         {
-                            <li @if (menu.menucode.Equals(ViewBag.Permission.MenuCode2)) { Html.Raw("class=on"); }>
+                            <li @if (menu.menucode.Equals(ViewBag.Permission.MenuCode2)) { @Html.Raw("class=on"); }>
                                 <a href="@menu.menuurl">@menu.menuname</a>
                             </li>
                         }

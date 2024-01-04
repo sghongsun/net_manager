@@ -28,8 +28,8 @@ namespace Manager.Request.Manage
 
     public class TermsModifyRequest
     {
-        [Range(0, int.MaxValue, ErrorMessage = "잘못된 값 입니다.")]
-        public int idx;
+        [Range(1, int.MaxValue, ErrorMessage = "잘못된 값 입니다.")]
+        public int idx { get; set; }
 
         [Required(ErrorMessage = "제목을 입력하여 주세요.")]
         public string title { get; set; }
@@ -43,7 +43,7 @@ namespace Manager.Request.Manage
 
     public class TermsDeleteRequest
     {
-        [Range(0, int.MaxValue, ErrorMessage = "잘못된 값 입니다.")]
-        public int idx;
+        [Range(1, int.MaxValue, ErrorMessage = "잘못된 값 입니다.")]
+        public int idx { get; set; }
     }
 }

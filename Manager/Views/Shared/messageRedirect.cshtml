@@ -1,0 +1,43 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>관리자</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+<body>
+    @if (ViewBag.data != null)
+    {
+        <form id="redirectForm" action="@ViewBag.redirectUri" method="@ViewBag.method" style="display: none;">
+            @foreach (var key in ViewBag.data.Keys)
+            {
+                if (!key.Equals("pagination"))
+                { 
+                    <input type="hidden" name="@key" value="@ViewBag.data[key]" />
+                }
+            }
+        </form>
+    }
+
+<script th:inline="javascript">
+    /* <![CDATA[ */
+
+    window.onload = () => {
+        const message = "@ViewBag.message";
+        if (message) {
+            alert(message);
+        }
+
+        const form = document.getElementById('redirectForm');
+        if (form) {
+            form.submit();
+            return false;
+        }
+
+        const redirectUri = "@ViewBag.redirectUri";
+        location.replace(redirectUri);
+    }
+
+    /* ]]> */
+</script>
+</body>
+</html>

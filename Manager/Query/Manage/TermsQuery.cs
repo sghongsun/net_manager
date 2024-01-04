@@ -34,5 +34,60 @@ namespace Manager.Query.Manage
                 "set session transaction isolation level repeatable read;";
             return MySql;
         }
+
+        public string insert_terms()
+        {
+            string MySql = "" +
+                "insert into terms ( " +
+                "           title, " +
+                "           place, " +
+                "           contents, " +
+                "           createid, " +
+                "           createip " +
+                "   ) values ( " +
+                "           @title, " +
+                "           @place, " +
+                "           @contents, " +
+                "           @id, " +
+                "           @ip " +
+                ")";
+            return MySql;
+        }
+
+        public string select_terms_by_idx()
+        {
+            string MySql = "" +
+                "set session transaction isolation level read uncommitted; " +
+                "select " +
+                "               idx, title, place, contents, createid, createdt " +
+                "from           terms " +
+                "where          idx = @idx; " +
+                "set session transaction isolation level repeatable read;";
+            return MySql;
+        }
+
+        public string update_terms()
+        {
+            string MySql = "" +
+                "update terms set " +
+                "           title = @title, " +
+                "           place = @place, " +
+                "           contents = @contents, " +
+                "           updateid = @id, " +
+                "           updateip = @ip " +
+                "where      idx = @idx;";
+            return MySql;
+        }
+
+        public string update_terms_for_delflag()
+        {
+            string MySql = "" +
+                "update terms set " +
+                "           delflag = 'Y', " +
+                "           updateid = @id, " +
+                "           updateip = @ip " +
+                "where      idx = @idx;";
+            return MySql;
+        }
     }
 }

@@ -29,7 +29,7 @@ namespace Manager
         }
 
         //필터링 할 문자열
-        public static string[] blackList = {"--",";--",";","/*","*/","@@",
+        public static string[] blackList = {"--",";--",">;","/*","*/","@@",
               "declare","delete","update","insert", "select",
               "exec", "execute",
               "drop","kill","sysobjects","syscolumns"};
@@ -74,7 +74,7 @@ namespace Manager
                     catch { }
                     finally
                     {
-                        Response.Redirect("/error?iii="+ parameterValue);
+                        Response.Redirect("/error");
                     }
                 }
             }

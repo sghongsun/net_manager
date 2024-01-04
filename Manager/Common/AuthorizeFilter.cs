@@ -92,7 +92,8 @@ namespace Manager.Common
                 if (menuModel.menucode.IsEmpty() && !thisPage.Contains("/common"))
                 {
                     filterContext.Result = MessageConfig.AlertMessage("유효하지 않은 경로 입니다.", returnPageType);
-                } else
+                } 
+                else
                 {
                     if (!menuModel.menucode.IsEmpty())
                     {
@@ -113,6 +114,11 @@ namespace Manager.Common
                         mainPermissionModel.TopMenuList = getTopMenu(adminGroupModel.groupread);                        
                         filterContext.Controller.ViewBag.Permission = mainPermissionModel;
 
+                        return;
+                    }
+
+                    if (thisPage.Contains("/common"))
+                    {
                         return;
                     }
 

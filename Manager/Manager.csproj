@@ -172,6 +172,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Common\AES.cs" />
     <Compile Include="Common\AuthorizeFilter.cs" />
+    <Compile Include="Common\FileUtil.cs" />
     <Compile Include="Common\Func.cs" />
     <Compile Include="Common\MessageConfig.cs" />
     <Compile Include="Common\SetInfo.cs" />
@@ -429,6 +430,10 @@
     <Content Include="Views\Admin\MenuAuthGroupList.cshtml" />
     <Content Include="Views\Admin\MenuAuthAdminList.cshtml" />
     <Content Include="Views\Terms\List.cshtml" />
+    <Content Include="Views\Terms\Add.cshtml" />
+    <Content Include="Views\Common\editorFileUpload.cshtml" />
+    <Content Include="Views\Terms\Modify.cshtml" />
+    <Content Include="Views\Shared\messageRedirect.cshtml" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

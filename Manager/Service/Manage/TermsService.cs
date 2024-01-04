@@ -11,6 +11,8 @@ using Manager.Request;
 using System.Web.WebPages;
 using MySql.Data.MySqlClient;
 using System.Data;
+using System.Transactions;
+using System.Diagnostics.Metrics;
 
 namespace Manager.Service.Manage
 {
@@ -117,6 +119,123 @@ namespace Manager.Service.Manage
             };
 
             return model;
+        }
+
+        public void insertTerms(TermsAddRequest termsAddRequest)
+        {
+            using (TransactionScope ts = new TransactionScope())
+            {
+                using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+                {
+                    dbcon.Open();
+
+                    using (var cmd = new MySqlCommand(termsQuery.insert_terms(), dbcon))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add(new MySqlParameter("@title", termsAddRequest.title));
+                        cmd.Parameters.Add(new MySqlParameter("@place", termsAddRequest.place));
+                        cmd.Parameters.Add(new MySqlParameter("@contents", termsAddRequest.contents));
+                        cmd.Parameters.Add(new MySqlParameter("@id", Func.GetCookie("adminid")));
+                        cmd.Parameters.Add(new MySqlParameter("@ip", Func.GetCookie("ip")));
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    ts.Complete();
+
+                    dbcon.Close();
+                    dbcon.Dispose();
+                }
+            }
+        }
+
+        public TermsModel getTermsInfo(int idx)
+        {
+            TermsModel model = new TermsModel();
+
+            using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+            {
+                dbcon.Open();
+
+                using (var cmd = new MySqlCommand(termsQuery.select_terms_by_idx(), dbcon))
+                {
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.Add(new MySqlParameter("@idx", idx));
+
+                    MySqlDataReader dr = cmd.ExecuteReader();
+
+                    if (dr.Read())
+                    {
+                        model.idx = Convert.ToInt32(dr["idx"]);
+                        model.title = dr["title"].ToString();
+                        model.place = dr["place"].ToString();
+                        model.contents = dr["contents"].ToString();
+                        model.createid = dr["createid"].ToString();
+                        model.createdt = Convert.ToDateTime(dr["createdt"]);
+                    }
+                    dr.Close();
+                }                
+
+                dbcon.Close();
+                dbcon.Dispose();
+            }
+
+            return model;
+        }
+
+        public void updateTmers(TermsModifyRequest termsModifyRequest)
+        {
+            using (TransactionScope ts = new TransactionScope())
+            {
+                using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+                {
+                    dbcon.Open();
+
+                    using (var cmd = new MySqlCommand(termsQuery.update_terms(), dbcon))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add(new MySqlParameter("@idx", termsModifyRequest.idx));
+                        cmd.Parameters.Add(new MySqlParameter("@title", termsModifyRequest.title));
+                        cmd.Parameters.Add(new MySqlParameter("@place", termsModifyRequest.place));
+                        cmd.Parameters.Add(new MySqlParameter("@contents", termsModifyRequest.contents));
+                        cmd.Parameters.Add(new MySqlParameter("@id", Func.GetCookie("adminid")));
+                        cmd.Parameters.Add(new MySqlParameter("@ip", Func.GetCookie("ip")));
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    ts.Complete();
+
+                    dbcon.Close();
+                    dbcon.Dispose();
+                }
+            }
+        }
+
+        public void deleteTmers(TermsDeleteRequest termsDeleteRequest)
+        {
+            using (TransactionScope ts = new TransactionScope())
+            {
+                using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+                {
+                    dbcon.Open();
+
+                    using (var cmd = new MySqlCommand(termsQuery.update_terms_for_delflag(), dbcon))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add(new MySqlParameter("@idx", termsDeleteRequest.idx));
+                        cmd.Parameters.Add(new MySqlParameter("@id", Func.GetCookie("adminid")));
+                        cmd.Parameters.Add(new MySqlParameter("@ip", Func.GetCookie("ip")));
+
+                        cmd.ExecuteNonQuery();
+                    }
+
+                    ts.Complete();
+
+                    dbcon.Close();
+                    dbcon.Dispose();
+                }
+            }
         }
     }
 }
