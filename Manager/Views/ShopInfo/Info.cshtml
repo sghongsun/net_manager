@@ -1,0 +1,175 @@
+﻿@using Manager.Common
+@model Manager.Models.Manage.ShopInfoModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+<script type="text/javascript" src="/js/manage/shopinfo/shopinfo.js?ver=@Func.GetNow()"></script>
+
+<div class="tb_layout_1">
+    <form name="form" method="post" action="/manage/shopinfo/modify" autocomplete="off">
+        @Html.AntiForgeryToken()
+        <table class="sub_table">
+            <colgroup>
+                <col style="width: 150px;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td class="title"><span>배송비정책</span></td>
+                    <td style="line-height:30px;">
+                        <span style="display:inline-block; width:650px;">
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">배송비기준</span> :
+                            <input type="text" name="standardprice" id="StandardPrice" maxlength="8" value="@Model.standardprice" class="input_text" style="width: 100px;" />원 미만시 배송비
+                            <input type="text" name="deliveryprice" id="DeliveryPrice" maxlength="5" value="@Model.deliveryprice" class="input_text" style="width: 100px;" />원 부과
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">반품배송비</span> :
+                            <input type="text" name="returndeliveryprice" id="ReturnDeliveryPrice" maxlength="5" value="@Model.returndeliveryprice" class="input_text" style="width: 100px;" />원
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">교환배송비</span> :
+                            <input type="text" name="changedeliveryprice" id="ChangeDeliveryPrice" maxlength="5" value="@Model.changedeliveryprice" class="input_text" style="width: 100px;" />원
+                            <br />
+
+                            <input type="hidden" name="O_StandardPrice" id="O_StandardPrice" value="@Model.standardprice" />
+                            <input type="hidden" name="O_DeliveryPrice" id="O_DeliveryPrice" value="@Model.deliveryprice" />
+                            <input type="hidden" name="O_ReturnDeliveryPrice" id="O_ReturnDeliveryPrice" value="@Model.returndeliveryprice" />
+                            <input type="hidden" name="O_ChangeDeliveryPrice" id="O_ChangeDeliveryPrice" value="@Model.changedeliveryprice" />
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td class="title"><span>해외 배송비정책</span></td>
+                    <td style="line-height:30px;">
+                        <span style="display:inline-block; width:650px;">
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">배송비기준</span> :
+                            <input type="text" name="foreignstandardprice" id="ForeignStandardPrice" maxlength="8" value="@Model.foreignstandardprice" class="input_text" style="width: 100px;" />원 미만시 배송비
+                            <input type="text" name="foreigndeliveryprice" id="ForeignDeliveryPrice" maxlength="5" value="@Model.foreigndeliveryprice" class="input_text" style="width: 100px;" />원 부과
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">반품배송비</span> :
+                            <input type="text" name="foreignreturndeliveryprice" id="ForeignReturnDeliveryPrice" maxlength="5" value="@Model.foreignreturndeliveryprice" class="input_text" style="width: 100px;" />원
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">교환배송비</span> :
+                            <input type="text" name="foreignchangedeliveryprice" id="ForeignChangeDeliveryPrice" maxlength="5" value="@Model.foreignchangedeliveryprice" class="input_text" style="width: 100px;" />원
+                            <br />
+
+                            <input type="hidden" name="O_ForeignStandardPrice" id="O_ForeignStandardPrice" value="@Model.foreignstandardprice" />
+                            <input type="hidden" name="O_ForeignDeliveryPrice" id="O_ForeignDeliveryPrice" value="@Model.foreigndeliveryprice" />
+                            <input type="hidden" name="O_ForeignReturnDeliveryPrice" id="O_ForeignReturnDeliveryPrice" value="@Model.foreignreturndeliveryprice" />
+                            <input type="hidden" name="O_ForeignChangeDeliveryPrice" id="O_ForeignChangeDeliveryPrice" value="@Model.foreignchangedeliveryprice" />
+                        </span>
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+        <div style="height:15px"></div>
+
+        <table class="sub_table">
+            <colgroup>
+                <col style="width: 150px;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td class="title"><span>반송지</span></td>
+                    <td style="line-height:30px;">
+                        <span style="display:inline-block; width:650px;">
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">우편번호</span> :
+                            <input type="text" name="rzipcode" id="RZipCode" maxlength="6" value="@Model.rzipcode" class="input_text" style="width: 80px;" readonly="readonly" />
+                            <a href="javascript:execDaumPostcode('RZipCode', 'RAddr1')" class="btn-c"><span>우편번호</span></a>
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">기본주소</span> :
+                            <input type="text" name="raddr1" id="RAddr1" maxlength="200" value="@Model.raddr1" class="input_text" style="width: 500px;" readonly="readonly" />
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">상세주소</span> :
+                            <input type="text" name="raddr2" id="RAddr2" maxlength="200" value="@Model.raddr2" class="input_text" style="width: 500px;" />
+                            <br />
+
+                            <input type="hidden" name="O_RZipCode" id="O_RZipCode" value="@Model.rzipcode" />
+                            <input type="hidden" name="O_RAddr1" id="O_RAddr1" value="@Model.raddr1" />
+                            <input type="hidden" name="O_RAddr2" id="O_RAddr2" value="@Model.raddr2" />
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="height:15px"></div>
+
+        <table class="sub_table">
+            <colgroup>
+                <col style="width: 150px;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td class="title"><span>해외 반송지</span></td>
+                    <td style="line-height:30px;">
+                        <span style="display:inline-block; width:650px;">
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">우편번호</span> :
+                            <input type="text" name="foreignrzipcode" id="ForeignRZipCode" maxlength="6" value="@Model.foreignrzipcode" class="input_text" style="width: 80px;" readonly="readonly" />
+                            <a href="javascript:execDaumPostcode('ForeignRZipCode', 'ForeignRAddr1')" class="btn-c"><span>우편번호</span></a>
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">기본주소</span> :
+                            <input type="text" name="foreignraddr1" id="ForeignRAddr1" maxlength="200" value="@Model.foreignraddr1" class="input_text" style="width: 500px;" readonly="readonly" />
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">상세주소</span> :
+                            <input type="text" name="foreignraddr2" id="ForeignRAddr2" maxlength="200" value="@Model.foreignraddr2" class="input_text" style="width: 500px;" />
+                            <br />
+
+                            <input type="hidden" name="O_ForeignRZipCode" id="O_ForeignRZipCode" value="@Model.foreignrzipcode" />
+                            <input type="hidden" name="O_ForeignRAddr1" id="O_ForeignRAddr1" value="@Model.foreignraddr1" />
+                            <input type="hidden" name="O_ForeignRAddr2" id="O_ForeignRAddr2" value="@Model.foreignraddr2" />
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="height:15px"></div>
+
+        <table class="sub_table">
+            <colgroup>
+                <col style="width: 150px;" />
+                <col style="width: auto;" />
+            </colgroup>
+            <tbody>
+                <tr>
+                    <td class="title"><span>상품평</span></td>
+                    <td style="line-height:30px;">
+                        <span style="display:inline-block; width:650px;">
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">일반상품평</span> :
+                            <input type="text" name="txtreviewpoint" id="TxtReviewPoint" maxlength="200" value="@Model.txtreviewpoint" class="input_text" style="width: 100px;" />포인트
+                            <br />
+
+                            <span class="required" style="display:inline-block;width:80px;line-height:23px;">포토상품평</span> :
+                            <input type="text" name="imgreviewpoint" id="ImgReviewPoint" maxlength="200" value="@Model.imgreviewpoint" class="input_text" style="width: 100px;" />포인트
+                            <br />
+
+                            <input type="hidden" name="O_TxtReviewPoint" id="O_TxtReviewPoint" value="@Model.txtreviewpoint" />
+                            <input type="hidden" name="O_ImgReviewPoint" id="O_ImgReviewPoint" value="@Model.imgreviewpoint" />
+                        </span>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div style="height:15px"></div>
+    </form>
+</div>
+@if (ViewBag.Permission.isWrite)
+{
+    <div class="posR mt20 mb20">
+        <div class="ac">
+            <a href="javascript:ins_ShopInfo();" class="btn-c"><span>수정</span></a>
+        </div>
+    </div>
+}

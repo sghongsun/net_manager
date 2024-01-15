@@ -209,5 +209,46 @@ namespace Manager.Controllers
 
             return View(model);
         }
+
+        [HttpGet]
+        [Route("manage/myinfo/modify")]
+        public ActionResult MyInfo()
+        {
+            AdminModel model = adminService.getAdminIfo(Func.GetCookie("adminid"));
+            model.groupname = adminGroupService.getInfoByGroupCode(model.groupcode).groupname;
+
+            return View(model);
+        }
+
+        [HttpPost]
+        [Route("manage/myinfo/ajax/mypasswordmodify")]
+        public ActionResult myPasswordModify()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [Route("manage/admin/myinfopwdmodifyok")]
+        public void myPasswordMdoifyOk(AdminMyPwdModifyRequest adminMyPwdModifyRequest)
+        {
+            Response.Write(adminService.updateAdminMyPwd(adminMyPwdModifyRequest));
+            Response.End();
+        }
+
+        [HttpPost, ValidateAntiForgeryToken]
+        [Route("manage/myinfo/myinfohpmodify")]
+        public ActionResult myHpModifyOk(AdminHpModifyRequest adminHpModifyRequest)
+        {
+            string result = adminService.updateAdminHp(adminHpModifyRequest);
+            if (result.Equals("OK"))
+            {
+                return MessageConfig.AlertMessage("수정 되었습니다.", "location.replace('/manage/myinfo/modify');");
+            }
+            else
+            {
+                return MessageConfig.AlertMessage(result, "history.back();");
+            }
+
+        }
     }
 }

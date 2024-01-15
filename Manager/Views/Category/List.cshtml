@@ -1,0 +1,219 @@
+﻿@using Manager.Common
+@model Manager.Models.Product.CategoryListModel
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script type="text/javascript" src="/js/product/category.js?ver=@Func.GetNow()"></script>
+
+<style type="text/css">
+    tr.depth1 td {
+        background-color: #e5e5e5;
+    }
+
+    .c_name {
+        display: inline-block;
+        width: 90%;
+    }
+
+    tr.depth1 td span > a {
+        font-weight: bold;
+    }
+
+    .c_del {
+        color: #bababa !important;
+    }
+
+    .tb_data_1 tbody td {
+        border-left: 1px solid #fff !important;
+    }
+
+    #CategoryList .btn-d {
+        width: 70px !important;
+    }
+
+    .my-menu-btn {
+        display: inline-block;
+        position: absolute;
+        top: 0;
+        right: 0;
+    }
+
+    .my-menu-wrap {
+        display: none;
+        position: absolute;
+        top: 25px;
+        right: 0;
+        padding: 10px;
+        background: #fff;
+        z-index: 1000;
+        border: 1px solid #999;
+    }
+
+    .my-menu {
+        border-top: 2px solid #4693cb;
+        background: #fff; /*box-shadow:5px 5px 3px #999;*/
+    }
+
+        .my-menu thead th {
+            height: 25px !important;
+            font-size: 12px;
+            font-weight: bold;
+            border: 1px solid #d8d8d8;
+            border-collapse: collapse;
+            text-align: center;
+            vertical-align: middle;
+            color: #333;
+            background: #f7f7f7;
+        }
+
+        .my-menu td {
+            height: 25px !important;
+            font-size: 12px;
+            font-weight: normal;
+            border: 1px solid #d8d8d8;
+            border-collapse: collapse;
+            padding: 0 15px;
+            box-sizing: border-box;
+        }
+</style>
+
+<div class="bottom_sky_line mb30">
+    <table class="tab_table_nl">
+        <colgroup>
+            <col style="width:150px;" />
+            <col style="width:1px;" />
+            <col style="width:150px;" />
+            <col style="width:1px;" />
+            <col style="width:150px;" />
+            <col style="width:auto;" />
+        </colgroup>
+        <tbody>
+            <tr>
+                <td class="on"><a href="/product/category/list">전체분류</a></td>
+                <td></td>
+                <td class="off"><a href="/product/category/list1">대분류</a></td>
+                <td></td>
+                <td class="off"><a href="/product/category/list2">소분류</a></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="tb_data_1">
+
+    <div class="btnRight3">
+        <select name="AddDepth" id="AddDepth">
+            <option value="1">대분류</option>
+            <option value="2">소분류</option>
+        </select>
+        <a href="javascript:lay_CategoryAddForm('0')" class="btn-c"><span>분류입력</span></a>
+    </div>
+
+    <table>
+        <colgroup>
+            <col style="width:auto;" />
+            <col style="width:10%;" />
+            <col style="width:10%;" />
+            <col style="width:10%;" />
+            <col style="width:10%;" />
+        </colgroup>
+        <tbody id="CategoryList">
+            @foreach (var list1 in Model.Category1List)
+            {
+                <tr class="depth1">
+                    <td class="al pl5">
+                        <span class="c_name">
+                            @if (ViewBag.Permission.isWrite)
+                            {
+                                <a onclick="|lay_CategoryModifyForm('1', '@list1.categorycode1', '')" style="cursor: pointer;">
+                                    <span class="@if (list1.displayflag.Equals("N")) { @Html.Raw("c_del") }">
+                                        [@list1.categorycode1] @list1.categoryname1
+                                    </span>
+                                </a>
+                            }
+                            else
+                            {
+                                <span class="@if (list1.displayflag.Equals("N")) { @Html.Raw("c_del") }">
+                                    [@list1.categorycode1] @list1.categoryname1
+                                </span>
+                            }
+                        </span>
+                    </td>
+                    <td>@list1.productsalecnt / @list1.productcnt</td>
+                    <td>
+                        @if (ViewBag.Permission.isWrite)
+                        {
+                            <a onclick="mod_CategoryDisplayNum('1', 'up', '@list1.categorycode1', '')" class="btn-d" style="cursor: pointer;"><span>UP</span></a>
+                        }
+                    </td>
+                    <td>
+                        @if (ViewBag.Permission.isWrite)
+                        {
+                            <a onclick="mod_CategoryDisplayNum('1', 'down', '@list1.categorycode1', '')" class="btn-d" style="cursor: pointer;"><span>DOWN</span></a>
+                        }
+                    </td>
+                    <td>
+                        @if (ViewBag.Permission.isWrite)
+                        {
+                            <a onclick="lay_CategoryModifyForm('1', '@list1.categorycode1', '')" class="btn-d" style="cursor: pointer;"><span>수정</span></a>
+                        }                        
+                    </td>
+                </tr>
+                foreach (var list2 in Model.Category2List)
+                {
+                    if (list1.categorycode1.Equals(list2.categorycode1))
+                    {
+                        <tr class="depth2">
+                            <td class="al pl100">
+                                <span class="c_name">
+                                    @if (ViewBag.Permission.isWrite)
+                                    {
+                                        <a onclick="lay_CategoryModifyForm('2', '@list2.categorycode1', '@list2.categorycode2')" style="cursor: pointer;">
+                                            <span class="@if (list2.displayflag.Equals("N")) { @Html.Raw("c_del") }">
+                                                [@list2.categorycode2] @list2.categoryname2
+                                            </span>
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="@if (list2.displayflag.Equals("N")) { @Html.Raw("c_del") }">
+                                            [@list2.categorycode1] @list2.categoryname1
+                                        </span>
+                                    }
+                                </span>
+                            </td>
+                            <td>@list2.productsalecnt / @list2.productcnt</td>
+                            <td>
+                                @if (ViewBag.Permission.isWrite)
+                                {
+                                    <a onclick="mod_CategoryDisplayNum('2', 'up', '@list2.categorycode1', '@list2.categorycode2')" class="btn-d" style="cursor: pointer;"><span>UP</span></a>
+                                }
+                            </td>
+                            <td>
+                                @if (ViewBag.Permission.isWrite)
+                                {
+                                    <a onclick="mod_CategoryDisplayNum('2', 'down', '@list2.categorycode1', '@list2.categorycode2')" class="btn-d" style="cursor: pointer;"><span>DOWN</span></a>
+                                }
+                            </td>
+                            <td>
+                                @if (ViewBag.Permission.isWrite)
+                                {
+                                    <a onclick="lay_CategoryModifyForm('2', '@list2.categorycode1', '@list2.categorycode2')" class="btn-d" style="cursor: pointer;"><span>수정</span></a>
+                                }
+                            </td>
+                        </tr>
+                    }
+                }                
+            }
+        </tbody>
+    </table>
+</div>
+
+<form name="FormCategory" id="FormCategory" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Depth" />
+    <input type="hidden" name="CategoryCode1" />
+    <input type="hidden" name="CategoryName" />
+    <input type="hidden" name="DisplayFlag" />
+</form>

@@ -142,7 +142,7 @@ namespace Manager.Query.Manage
             string MySql = "" +
                     "set session transaction isolation level read uncommitted; " +
                     "select " +
-                    "               adminid, groupcode, adminname, hp, authflag, pwderrcnt, " +
+                    "               adminid, adminpwd, groupcode, adminname, hp, authflag, pwderrcnt, " +
                     "               createid, createip, createdt, updateid, updateip, updatedt " +
                     "from           admins " +
                     "where          adminid = @adminid; " +

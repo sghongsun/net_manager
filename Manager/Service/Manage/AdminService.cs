@@ -407,6 +407,7 @@ namespace Manager.Service.Manage
                     {
                         adminModel.adminid = dr["adminid"].ToString();
                         adminModel.adminname = dr["adminname"].ToString();
+                        adminModel.adminpwd = dr["adminpwd"].ToString();
                         adminModel.groupcode = Convert.ToInt32(dr["groupcode"]);
                         adminModel.hp = dr["hp"].ToString();
                         adminModel.authflag = dr["authflag"].ToString();
@@ -500,6 +501,51 @@ namespace Manager.Service.Manage
 
                         cmd.ExecuteNonQuery();
                     }                    
+
+                    ts.Complete();
+
+                    dbcon.Close();
+                    dbcon.Dispose();
+                }
+            }
+
+            return "OK|||||";
+        }
+
+        public string updateAdminMyPwd(AdminMyPwdModifyRequest adminMyPwdModifyRequest)
+        {
+            if (!adminMyPwdModifyRequest.pwd.Equals(adminMyPwdModifyRequest.pwd1))
+            {
+                return "FAIL|||||비밀번호가 상이 합니다.";
+            }
+
+            AdminModel adminModel = getAdminIfo(Func.GetCookie("adminid"));
+            if (adminModel == null)
+            {
+                return "FAIL|||||정보가 없습니다.";
+            }
+
+            if (!SHA.Sha512_Encrypt(adminMyPwdModifyRequest.prevpwd).Equals(adminModel.adminpwd))
+            {
+                return "FAIL|||||현재 비밀번호가 상이 합니다.";
+            }
+
+            using (TransactionScope ts = new TransactionScope())
+            {
+                using (MySqlConnection dbcon = new MySqlConnection(SetInfo.m_dbconn))
+                {
+                    dbcon.Open();
+
+                    using (var cmd = new MySqlCommand(adminQuery.update_admin_for_pwd(), dbcon))
+                    {
+                        cmd.CommandType = CommandType.Text;
+                        cmd.Parameters.Add(new MySqlParameter("@adminId", Func.GetCookie("adminid")));
+                        cmd.Parameters.Add(new MySqlParameter("@adminpwd", SHA.Sha512_Encrypt(adminMyPwdModifyRequest.pwd)));
+                        cmd.Parameters.Add(new MySqlParameter("@id", Func.GetCookie("adminid")));
+                        cmd.Parameters.Add(new MySqlParameter("@ip", Func.GetCookie("ip")));
+
+                        cmd.ExecuteNonQuery();
+                    }
 
                     ts.Complete();
 

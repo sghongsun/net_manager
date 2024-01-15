@@ -1,0 +1,64 @@
+﻿OK|||||
+@model Manager.Models.Product.CategoryModel
+@{
+    string page_title = ViewBag.Depth.Equals("1") ? "대분류 수정" : "소분류 수정";
+    string title = ViewBag.Depth.Equals("1") ? "대분류" : "소분류";
+    string categoryName = ViewBag.Depth.Equals("1") ? Model.categoryname1 : Model.categoryname2;
+}
+<div style="width:600px; padding:20px;">
+
+    <form name="ModCategory" id="ModCategory" method="post">
+        @Html.AntiForgeryToken()
+        <input type="hidden" name="Depth" id="Depth" value="@ViewBag.Depth" />
+        <input type="hidden" name="categoryCode1" value="@Model.categorycode1" />
+        <input type="hidden" name="categoryCode2" value="@Model.categorycode2" />
+        <div>
+            <table style="width:100%">
+                <tr>
+                    <td class="left">
+                        <img src="/images/bu_title.gif" style="vertical-align:middle" alt="icon" /> <strong>@page_title</strong>
+                    </td>
+                    <td class="ar">
+                        <a href="javascript:closePop('popup')"><img src="/Images/img_pop_close.gif" style="width:14px;height:14px" alt="close" /></a>
+                    </td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="pContents">
+
+            <div id="pContents" class="tb_layout_1" style="margin-top:0 !important; margin-bottom:30px !important;">
+                <table>
+                    <colgroup>
+                        <col style="width: 150px;" />
+                        <col style="width: 450px;" />
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <td class="title"><span class="required">@title</span></td>
+                            <td class="al pl20"><input type="text" name="categoryName" id="CategoryName" value="@categoryName" maxlength="25" class="input_text" style="width:80%" onkeypress="if (event.keyCode == 13) { lay_CategoryAdd(); }" /></td>
+                        </tr>
+                        <tr>
+                            <td class="title"><span class="required">게시여부</span></td>
+                            <td class="al pl20">
+                                <select name="displayFlag">
+                                    <option value="Y" @if (Model.displayflag.Equals("Y")) { @Html.Encode("selected"); }>Y</option>
+                                    <option value="N" @if (Model.displayflag.Equals("N")) { @Html.Encode("selected"); }>N</option>
+                                </select>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="posR mt20">
+                <div class="ac">
+                    <a href="javascript:lay_CategoryModify()" class="btn-c"><span>수정</span></a>
+                    <a href="javascript:closePop('popup')" class="btn-d" style="width:initial !important"><span>닫기</span></a>
+                </div>
+            </div>
+
+        </div>
+
+    </form>
+
+</div>

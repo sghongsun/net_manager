@@ -147,7 +147,20 @@ namespace Manager.Request.Manage
 
         [Required(ErrorMessage = "잘못 된 경로 입니다.")]
         public string authType { get; set; }
+    }
 
+    public class AdminMyPwdModifyRequest
+    {
+        [Required(ErrorMessage = "현재 비밀번호를 입력하여 주세요.")]
+        [StringLength(12, MinimumLength = 4, ErrorMessage = "현재 비밀번호를 입력하여 주세요.")]
+        public string prevpwd { get; set; }
 
+        [Required(ErrorMessage = "비밀번호를 입력하여 주세요.")]
+        [StringLength(12, MinimumLength = 4, ErrorMessage = "비밀번호를 입력하여 주세요.")]
+        public string pwd { get; set; }
+
+        [Required(ErrorMessage = "비밀번호 확인을 입력하여 주세요.")]
+        [StringLength(12, MinimumLength = 4, ErrorMessage = "비밀번호 확인을 입력하여 주세요.")]
+        public string pwd1 { get; set; }
     }
 }

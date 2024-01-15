@@ -1,0 +1,164 @@
+﻿@using Manager.Common
+@model List<Manager.Models.Product.CategoryModel>
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+
+    int num = 0;
+    string bgcolor = "#ffffff";
+}
+<script type="text/javascript" src="/js/product/category.js?ver=@Func.GetNow()"></script>
+<div class="bottom_sky_line mb30">
+    <table class="tab_table_nl">
+        <colgroup>
+            <col style="width:150px;" />
+            <col style="width:1px;" />
+            <col style="width:150px;" />
+            <col style="width:1px;" />
+            <col style="width:150px;" />
+            <col style="width:auto;" />
+        </colgroup>
+        <tbody>
+            <tr>
+                <td class="off"><a href="/product/category/list">전체분류</a></td>
+                <td></td>
+                <td class="on"><a href="/product/category/list1">대분류</a></td>
+                <td></td>
+                <td class="off"><a href="/product/category/list2">소분류</a></td>
+                <td></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<div>
+    <table style="width:100%">
+        <colgroup>
+            <col style="width: 38%;" />
+            <col style="width: 2%;" />
+            <col style="width: 60%;" />
+        </colgroup>
+        <tbody>
+            <tr>
+                <td id="Category1AddFrom" class="vt bdN pd0">
+                    <form name="InsCategory" id="InsCategory" method="post">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="Depth" id="Depth" th:value="1" />
+                        <div class="tb_layout_1">
+                            <table>
+                                <colgroup>
+                                    <col style="width: 150px;" />
+                                    <col style="width:  auto;" />
+                                </colgroup>
+                                <tbody>
+                                    <tr>
+                                        <td class="title"><span class="required">대분류명</span></td>
+                                        <td><input type="text" name="categoryName" id="CategoryName" value="" maxlength="25" class="input_text" style="width:80%" onkeypress="if (event.keyCode == 13) { ins_Category1(); }" /></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="title"><span class="required">게시여부</span></td>
+                                        <td>
+                                            <select name="displayFlag" id="DisplayFlag">
+                                                <option value="Y">Y</option>
+                                                <option value="N" selected="selected">N</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        @if (ViewBag.Permission.isWrite)
+                        {
+                            <div class="ac mt20">
+                                <a href="javascript:lay_CategoryAdd()" class="btn-c"><span>입력</span></a>
+                            </div>
+                        }
+
+                    </form>
+
+                </td>
+                <td style="vertical-align:top; border:none; padding:0;">
+                    &nbsp;
+                </td>
+                <td style="vertical-align:top; border:none; padding:0;">
+                    <div class="tb_data_1 mt0">
+                        <table>
+                            <colgroup>
+                                <col style="width:   7%;" />
+                                <col style="width: auto;" />
+                                <col style="width:   7%;" />
+                                <col style="width:   7%;" />
+                                <col style="width:  15%;" />
+                                <col style="width:  15%;" />
+                                <!--<col style="width:  15%;" />-->
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th scope="col">코드</th>
+                                    <th scope="col">대분류명</th>
+                                    <th scope="col" colspan="2">순서</th>
+                                    <th scope="col">게시</th>
+                                    <th scope="col">수정</th>
+                                    <!--<th scope="col">삭제</th>-->
+                                </tr>
+                            </thead>
+                            <tbody id="Category1List">
+                                @foreach (var list in Model)
+                                {
+                                    if (list.displayflag.Equals("N"))
+                                    {
+                                        bgcolor = "#f1f1f1";
+                                    }
+                                    else
+                                    {
+                                        bgcolor = "#ffffff";
+                                    }
+                                    <tr style="background-color:@bgcolor">
+                                        <td><input type="text" name="MCategoryCode1" value="@list.categorycode1" class="ac w30 bdN" style="background-color:@bgcolor" readonly /></td>
+                                        <td><input type="text" name="MCategoryName1" value="@list.categoryname1" class="input_text" style="width:80%" /></td>
+                                        <td>
+                                            @if (ViewBag.Permission.isWrite)
+                                            {
+                                                <span><a onclick="mod_Category1DisplayNum('@num', 'up')" style="cursor: pointer;">↑</a></span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (ViewBag.Permission.isWrite)
+                                            {
+                                                <span><a onclick="mod_Category1DisplayNum('@num', 'down')" style="cursor: pointer;">↓</a></span>
+                                            }                                            
+                                        </td>
+                                        <td>
+                                            <select name="MDisplayFlag">
+                                                <option value="Y" @if (list.displayflag.Equals("Y")) { @Html.Encode("selected"); }>Y</option>
+                                                <option value="N" @if (list.displayflag.Equals("N")) { @Html.Encode("selected"); }>N</option>
+                                            </select>
+                                        </td>
+
+                                        <td>
+                                            @if (ViewBag.Permission.isWrite)
+                                            {
+                                                <a onclick="mod_Category1('@num')" class="btn-c"><span>수정</span></a>
+                                            }                                                
+                                        </td>
+                                        <!--<td><a href="javascript:del_Category1(num)" class="btn-c"><span>삭제</span></a></td>-->
+                                    </tr>
+                                    num++;
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<form name="ModCategory" id="ModCategory" method="post">
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="Depth" value="1" />
+    <input type="hidden" name="categoryCode1" id="C_CategoryCode1" />
+    <input type="hidden" name="categoryName" id="C_CategoryName1" />
+    <input type="hidden" name="displayFlag" id="C_DisplayFlag" />
+</form>

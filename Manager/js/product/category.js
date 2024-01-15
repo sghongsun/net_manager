@@ -69,8 +69,8 @@ function lay_CategoryModifyForm(depth, categoryCode1, categoryCode2) {
         async		 : false,
         data		 : "Depth=" + depth + "&CategoryCode1=" + categoryCode1 + "&CategoryCode2=" + categoryCode2,
         dataType	 : "text",
-        beforeSend: function(xhr){
-            xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+        headers: {
+            'RequestVerificationToken': getToken()
         },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
@@ -137,6 +137,9 @@ function lay_CategoryModify() {
             async		 : true,
             data		 : $("#ModCategory").serialize(),
             dataType	 : "text",
+            headers: {
+                'RequestVerificationToken': getToken()
+            },
             success		 : function (data) {
                 var splitData	 = data.split("|||||");
                 var result		 = splitData[0];
@@ -176,8 +179,8 @@ function mod_CategoryDisplayNum(depth, modType, categoryCode1, categoryCode2) {
         async		 : true,
         data		 : "Depth=" + depth + "&modType=" + modType + "&categoryCode1=" + categoryCode1 + "&categoryCode2=" + categoryCode2,
         dataType	 : "text",
-        beforeSend: function(xhr){
-            xhr.setRequestHeader($("meta[name='_csrf_header']").attr('content'), $("meta[name='_csrf']").attr('content'));
+        headers: {
+            'RequestVerificationToken': getToken()
         },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
@@ -237,6 +240,9 @@ function lay_CategoryAddForm(num) {
         async		 : false,
         data		 : $("#FormCategory").serialize(),
         dataType	 : "text",
+        headers: {
+            'RequestVerificationToken': getToken()
+        },
         success		 : function (data) {
             var splitData	 = data.split("|||||");
             var result		 = splitData[0];
@@ -297,6 +303,9 @@ function lay_CategoryAdd() {
             async		 : true,
             data		 : $("#InsCategory").serialize(),
             dataType	 : "text",
+            headers: {
+                'RequestVerificationToken': getToken()
+            },
             success		 : function (data) {
                 var splitData	 = data.split("|||||");
                 var result		 = splitData[0];
